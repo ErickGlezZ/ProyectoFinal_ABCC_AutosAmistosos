@@ -1,9 +1,11 @@
 package Vista;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyVetoException;
 import java.text.NumberFormat;
 
 public class VentanaPrincipal extends JFrame implements ActionListener{
@@ -11,16 +13,16 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
     JDesktopPane desktopPane;
     JMenu menuVehiculos;
     JMenuItem itemAltas, itemBajas, itemCambios, itemConsultas;
-    JButton btnToolAgregar, btnToolEliminar, btnToolCambiar, btnToolConsultar, btnAgregar, btnRestablecerAltas, btnCancelarAltas, btnEliminar, btnRestablecerBajas, btnCancelarBajas, btnBuscarBajas;
+    JButton btnToolAgregar, btnToolEliminar, btnToolCambiar, btnToolConsultar, btnAgregar, btnRestablecerAltas, btnCancelarAltas, btnEliminar, btnRestablecerBajas, btnCancelarBajas, btnBuscarBajas, btnBuscarCambios, btnRestablecerCambios, btnGuardarCambios, btnCancelarCambios;
     JInternalFrame IF_Altas, IF_Bajas, IF_Cambios, IF_Consultas;
 
 
-    JTextField idVehiculoAltas, modeloAltas, pesoAltas, idVehiculoBajas, modeloBajas, pesoBajas;
-    JFormattedTextField precioListaAltas, precioListaBajas;
-    JSpinner numCilindrosAltas, capacidadAltas, numCilindrosBajas, capacidadBajas;
-    JComboBox<Integer> numPuertasAltas, fechaFabAltas, diaAltas, añoAltas, numPuertasBajas, diaBajas, añoBajas;
-    JComboBox<String> paisFabAltas, mesAltas, colorAltas, paisFabBajas, mesBajas, colorBajas;
-    JTable tablaVehiculosAltas, tablaVehiculosBajas;
+    JTextField idVehiculoAltas, modeloAltas, pesoAltas, idVehiculoBajas, modeloBajas, pesoBajas, idVehiculoCambios, modeloCambios, pesoCambios;
+    JFormattedTextField precioListaAltas, precioListaBajas, precioListaCambios;
+    JSpinner numCilindrosAltas, capacidadAltas, numCilindrosBajas, capacidadBajas, numCilindrosCambios, capacidadCambios;
+    JComboBox<Integer> numPuertasAltas, fechaFabAltas, diaAltas, añoAltas, numPuertasBajas, diaBajas, añoBajas, numPuertasCambios, diaCambios, añoCambios;
+    JComboBox<String> paisFabAltas, mesAltas, colorAltas, paisFabBajas, mesBajas, colorBajas, paisFabCambios, mesCambios, colorCambios;
+    JTable tablaVehiculosAltas, tablaVehiculosBajas, tablaVehiculosCambios;
 
 
     public VentanaPrincipal() {
@@ -83,7 +85,12 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
 
         JPanel panelAltas = new JPanel(null);
         panelAltas.setBackground(Color.GREEN);
-        panelAltas.setBounds(0, 0, 700, 60);
+        panelAltas.setBounds(0, 0, 650, 60);
+
+        JPanel panelDerechoAltas = new JPanel();
+        panelDerechoAltas.setBackground(Color.GRAY);
+        panelDerechoAltas.setBounds(650, 0, 160, 700);
+        panelDerechoAltas.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
         JLabel txtAltas = new JLabel("ALTAS VEHICULOS");
         txtAltas.setFont(new Font("Roboto", Font.BOLD, 15));
@@ -94,13 +101,13 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
         agregarAInternal(IF_Altas,txtIdVehiculoAltas,10,80,120,20);
 
         idVehiculoAltas = new JTextField();
-        agregarAInternal(IF_Altas,idVehiculoAltas,135, 83,100,25);
+        agregarAInternal(IF_Altas,idVehiculoAltas,135, 83,150,25);
 
         JLabel txtModeloAltas = new JLabel("Modelo:");
         agregarAInternal(IF_Altas,txtModeloAltas,10,110,120,20);
 
         modeloAltas = new JTextField();
-        agregarAInternal(IF_Altas,modeloAltas,135,113,100,25);
+        agregarAInternal(IF_Altas,modeloAltas,135,113,150,25);
 
         JLabel txtPaisFabAltas = new JLabel("Pais de Fabricacion");
         agregarAInternal(IF_Altas,txtPaisFabAltas,10,150,120,20);
@@ -142,12 +149,12 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
         }
         agregarAInternal(IF_Altas, añoAltas, 320, 180, 80, 25);
 
-        // Precio de Lista
+
         JLabel txtPrecioListaAltas = new JLabel("Precio de Lista:");
         agregarAInternal(IF_Altas, txtPrecioListaAltas, 10, 210, 120, 20);
 
         precioListaAltas = new JFormattedTextField(NumberFormat.getNumberInstance());
-        agregarAInternal(IF_Altas, precioListaAltas, 135, 213, 100, 25);
+        agregarAInternal(IF_Altas, precioListaAltas, 135, 213, 150, 25);
 
 
         JLabel txtCilindrosAltas = new JLabel("Cilindros:");
@@ -160,32 +167,32 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
         agregarAInternal(IF_Altas, numCilindrosAltas, 135, 243, 50, 25);
 
 
-        JLabel txtCapacidadAltas = new JLabel("Capacidad:");
-        agregarAInternal(IF_Altas, txtCapacidadAltas, 255, 243, 120, 20);
+        JLabel txtCapacidadAltas = new JLabel("Capacidad de Personas:");
+        agregarAInternal(IF_Altas, txtCapacidadAltas, 10, 370, 140, 20);
 
         String capacidadesAltas[] = {"0", "2", "4", "5", "7", "8", "12", "15"};
         SpinnerListModel modeloCap = new SpinnerListModel(capacidadesAltas);
         capacidadAltas = new JSpinner(modeloCap);
-        agregarAInternal(IF_Altas, capacidadAltas, 350, 243, 50, 25);
+        agregarAInternal(IF_Altas, capacidadAltas, 160, 370, 50, 25);
 
 
-        JLabel txtPuertasAltas = new JLabel("Núm. Puertas:");
+        JLabel txtPuertasAltas = new JLabel("Número de Puertas:");
         agregarAInternal(IF_Altas, txtPuertasAltas, 10, 270, 120, 20);
 
         numPuertasAltas = new JComboBox<>(new Integer[]{0, 2, 3, 4, 5});
-        agregarAInternal(IF_Altas, numPuertasAltas, 135, 273, 60, 25);
+        agregarAInternal(IF_Altas, numPuertasAltas, 160, 273, 50, 25);
 
         JLabel txtPesoAltas = new JLabel("Peso:");
-        agregarAInternal(IF_Altas,txtPesoAltas,255,273,80,20);
+        agregarAInternal(IF_Altas,txtPesoAltas,10,330,80,20);
 
         pesoAltas = new JTextField();
-        agregarAInternal(IF_Altas,pesoAltas,301,273,100,25);
+        agregarAInternal(IF_Altas,pesoAltas,135,333,150,25);
 
         JLabel txtColorAltas = new JLabel("Color:");
         agregarAInternal(IF_Altas, txtColorAltas, 10, 300, 120, 20);
 
         String[] coloresAutoAltas = {
-                "Elige", "Negro", "Blanco", "Gris", "Plateado", "Rojo", "Azul",
+                "Elige color..", "Negro", "Blanco", "Gris", "Plateado", "Rojo", "Azul",
                 "Verde", "Amarillo", "Naranja", "Café", "Dorado", "Beige",
                 "Vino", "Azul Marino", "Gris Oxford"
         };
@@ -208,8 +215,8 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
         tablaVehiculosAltas.setPreferredScrollableViewportSize(new Dimension(660, 150));
 
         JScrollPane scrollTablaAltas = new JScrollPane(tablaVehiculosAltas);
-        scrollTablaAltas.setBounds(10, 340, 675, 150);
-        IF_Altas.add(scrollTablaAltas);
+        agregarAInternal(IF_Altas,scrollTablaAltas,10, 410, 640, 150);
+
 
         btnAgregar = new JButton("Agregar");
         agregarAInternal(IF_Altas,btnAgregar,490, 100,110,30);
@@ -220,10 +227,16 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
         btnCancelarAltas = new JButton("Cancelar");
         agregarAInternal(IF_Altas,btnCancelarAltas,490,240,110,30);
 
+        //IF_Altas.setSize(desktopPane.getWidth(), desktopPane.getHeight());
         IF_Altas.add(panelAltas);
-        IF_Altas.setSize(700, 500);
-        IF_Altas.setLocation(50, 50);
+        IF_Altas.add(panelDerechoAltas);
         desktopPane.add(IF_Altas);
+        IF_Altas.setLocation(0, 0);
+        try {
+            IF_Altas.setMaximum(true);
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        }
 
 
 
@@ -234,7 +247,12 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
 
         JPanel panelBajas = new JPanel(null);
         panelBajas.setBackground(Color.RED);
-        panelBajas.setBounds(0, 0, 700, 60);
+        panelBajas.setBounds(0, 0, 650, 60);
+
+        JPanel panelDerechoBajas = new JPanel();
+        panelDerechoBajas.setBackground(Color.GRAY);
+        panelDerechoBajas.setBounds(650, 0, 160, 700);
+        panelDerechoBajas.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
         JLabel txtBajas = new JLabel("BAJAS VEHICULOS");
         txtBajas.setFont(new Font("Roboto", Font.BOLD, 15));
@@ -248,9 +266,9 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
         idVehiculoBajas = new JTextField();
         agregarAInternal(IF_Bajas,idVehiculoBajas,135, 68,100,30);
 
-        JSeparator separador = new JSeparator();
-        separador.setForeground(Color.GRAY);
-        agregarAInternal(IF_Bajas, separador, 10, 105, 670, 2);
+        JSeparator separadorBajas = new JSeparator();
+        separadorBajas.setForeground(Color.GRAY);
+        agregarAInternal(IF_Bajas, separadorBajas, 10, 105, 640, 2);
 
         JLabel txtModeloBajas = new JLabel("Modelo:");
         agregarAInternal(IF_Bajas,txtModeloBajas,10,113,120,20);
@@ -303,7 +321,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
         agregarAInternal(IF_Bajas, txtPrecioListaBajas, 10, 210, 120, 20);
 
         precioListaBajas = new JFormattedTextField(NumberFormat.getNumberInstance());
-        agregarAInternal(IF_Bajas, precioListaBajas, 135, 213, 100, 25);
+        agregarAInternal(IF_Bajas, precioListaBajas, 135, 213, 150, 25);
 
 
         JLabel txtCilindrosBajas = new JLabel("Cilindros:");
@@ -316,32 +334,32 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
         agregarAInternal(IF_Bajas, numCilindrosBajas, 135, 243, 50, 25);
 
 
-        JLabel txtCapacidadBajas = new JLabel("Capacidad:");
-        agregarAInternal(IF_Bajas, txtCapacidadBajas, 255, 243, 120, 20);
+        JLabel txtCapacidadBajas = new JLabel("Capacidad de Personas:");
+        agregarAInternal(IF_Bajas, txtCapacidadBajas, 10, 370, 140, 20);
 
         String capacidadesBajas[] = {"0", "2", "4", "5", "7", "8", "12", "15"};
         SpinnerListModel modeloCapBajas = new SpinnerListModel(capacidadesBajas);
         capacidadBajas = new JSpinner(modeloCapBajas);
-        agregarAInternal(IF_Bajas, capacidadBajas, 350, 243, 50, 25);
+        agregarAInternal(IF_Bajas, capacidadBajas, 160, 370, 50, 25);
 
 
-        JLabel txtPuertasBajas = new JLabel("Núm. Puertas:");
+        JLabel txtPuertasBajas = new JLabel("Número de Puertas:");
         agregarAInternal(IF_Bajas, txtPuertasBajas, 10, 270, 120, 20);
 
         numPuertasBajas = new JComboBox<>(new Integer[]{0, 2, 3, 4, 5});
-        agregarAInternal(IF_Bajas, numPuertasBajas, 135, 273, 60, 25);
+        agregarAInternal(IF_Bajas, numPuertasBajas, 160, 273, 50, 25);
 
         JLabel txtPesoBajas = new JLabel("Peso:");
-        agregarAInternal(IF_Bajas,txtPesoBajas,255,273,80,20);
+        agregarAInternal(IF_Bajas,txtPesoBajas,10,330,80,20);
 
         pesoBajas = new JTextField();
-        agregarAInternal(IF_Bajas,pesoBajas,301,273,100,25);
+        agregarAInternal(IF_Bajas,pesoBajas,135,333,150,25);
 
         JLabel txtColorBajas = new JLabel("Color:");
         agregarAInternal(IF_Bajas, txtColorBajas, 10, 300, 120, 20);
 
         String[] coloresAutoBajas = {
-                "Elige", "Negro", "Blanco", "Gris", "Plateado", "Rojo", "Azul",
+                "Elige Color..", "Negro", "Blanco", "Gris", "Plateado", "Rojo", "Azul",
                 "Verde", "Amarillo", "Naranja", "Café", "Dorado", "Beige",
                 "Vino", "Azul Marino", "Gris Oxford"
         };
@@ -364,13 +382,12 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
         tablaVehiculosBajas.setPreferredScrollableViewportSize(new Dimension(660, 150));
 
         JScrollPane scrollTablaBajas = new JScrollPane(tablaVehiculosBajas);
-        scrollTablaBajas.setBounds(10, 340, 675, 150);
-        IF_Bajas.add(scrollTablaBajas);
+        agregarAInternal(IF_Bajas,scrollTablaBajas,10, 410, 640, 150);
 
         btnBuscarBajas = new JButton("Buscar");
-        agregarAInternal(IF_Bajas,btnBuscarBajas,320,68,80,30);
+        agregarAInternal(IF_Bajas,btnBuscarBajas,320,68,110,30);
 
-        btnEliminar = new JButton("Agregar");
+        btnEliminar = new JButton("Eliminar");
         agregarAInternal(IF_Bajas,btnEliminar,490, 120,110,30);
 
         btnRestablecerBajas = new JButton("Restablecer");
@@ -380,31 +397,174 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
         agregarAInternal(IF_Bajas,btnCancelarBajas,490,260,110,30);
 
         IF_Bajas.add(panelBajas);
-        IF_Bajas.setSize(700, 500);
-        IF_Bajas.setLocation(50, 50);
+        IF_Bajas.add(panelDerechoBajas);
         desktopPane.add(IF_Bajas);
+        IF_Bajas.setLocation(0, 0);
+        try {
+            IF_Bajas.setMaximum(true);
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        }
 
 
 
 
         // IF Cambios
-        IF_Cambios = new JInternalFrame("MODIFICAR", true, true, true, true);
+        IF_Cambios = new JInternalFrame("CAMBIOS", true, true, false, true);
         IF_Cambios.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
         IF_Cambios.setLayout(null);
 
         JPanel panelCambios = new JPanel(null);
-        panelCambios.setBackground(Color.ORANGE);
-        panelCambios.setBounds(0, 0, 700, 60);
+        panelCambios.setBackground(Color.YELLOW);
+        panelCambios.setBounds(0, 0, 650, 60);
 
-        JLabel txtCambios = new JLabel("MODIFICAR VEHICULOS");
+        JPanel panelDerechoCambios = new JPanel();
+        panelDerechoCambios.setBackground(Color.GRAY);
+        panelDerechoCambios.setBounds(650, 0, 160, 700);
+        panelDerechoCambios.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+
+        JLabel txtCambios = new JLabel("CAMBIOS VEHICULOS");
         txtCambios.setFont(new Font("Roboto", Font.BOLD, 15));
         txtCambios.setForeground(Color.WHITE);
-        agregarComponentePanel(panelCambios,txtCambios,10, 25, 200, 20);
+        agregarComponentePanel(panelCambios, txtCambios,10, 25, 180, 20);
+
+        JLabel txtIdVehiculoCambios = new JLabel("Numero Vehiculo:");
+        agregarAInternal(IF_Cambios,txtIdVehiculoCambios,10,70,120,20);
+
+        idVehiculoCambios = new JTextField();
+        agregarAInternal(IF_Cambios,idVehiculoCambios,135, 68,100,30);
+
+        JSeparator separadorCambios = new JSeparator();
+        separadorCambios.setForeground(Color.GRAY);
+        agregarAInternal(IF_Cambios, separadorCambios, 10, 105, 640, 2);
+
+        JLabel txtModeloCambios = new JLabel("Modelo:");
+        agregarAInternal(IF_Cambios,txtModeloCambios,10,113,120,20);
+
+        modeloCambios = new JTextField();
+        agregarAInternal(IF_Cambios,modeloCambios,135,113,100,25);
+
+        JLabel txtPaisFabCambios = new JLabel("Pais de Fabricacion");
+        agregarAInternal(IF_Cambios,txtPaisFabCambios,10,150,120,20);
+
+        String[] paisesFabricantesCambios = {
+                "Elige una opc..", "Alemania", "Argentina", "Australia", "Austria", "Bélgica",
+                "Brasil", "Canadá", "China", "Corea del Sur", "Chequia",
+                "Eslovaquia", "España", "Estados Unidos", "Francia", "Finlandia",
+                "Hungría", "India", "Indonesia", "Irán", "Italia",
+                "Japón", "Malasia", "México", "Países Bajos", "Polonia",
+                "Portugal", "Reino Unido", "Rusia", "Rumania", "Serbia",
+                "Sudáfrica", "Suecia", "Suiza", "Tailandia", "Taiwán",
+                "Túnez", "Turquía", "Ucrania", "Uzbekistán", "Vietnam"
+        };
+
+        paisFabCambios = new JComboBox<>(paisesFabricantesCambios);
+        paisFabCambios.setEditable(false);
+        agregarAInternal(IF_Cambios,paisFabCambios,135,148,120,25);
+
+        JLabel txtFechaFabCambios = new JLabel("Fecha de Fabricación:");
+        agregarAInternal(IF_Cambios, txtFechaFabCambios, 10, 180, 150, 20);
+
+        diaCambios = new JComboBox<>();
+        for (int d = 0; d <= 31; d++) diaCambios.addItem(d);
+        agregarAInternal(IF_Cambios, diaCambios, 160, 180, 50, 25);
+
+        mesCambios = new JComboBox<>(new String[]{
+                "Elije", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        });
+        agregarAInternal(IF_Cambios, mesCambios, 215, 180, 100, 25);
+
+        añoCambios = new JComboBox<>();
+        for (int a = 1900; a <= 2025; a++) {
+            añoCambios.addItem(a);
+        }
+        agregarAInternal(IF_Cambios, añoCambios, 320, 180, 80, 25);
+
+        JLabel txtPrecioListaCambios = new JLabel("Precio de Lista:");
+        agregarAInternal(IF_Cambios, txtPrecioListaCambios, 10, 210, 120, 20);
+
+        precioListaCambios = new JFormattedTextField(NumberFormat.getNumberInstance());
+        agregarAInternal(IF_Cambios, precioListaCambios, 135, 213, 150, 25);
+
+        JLabel txtCilindrosCambios = new JLabel("Cilindros:");
+        agregarAInternal(IF_Cambios, txtCilindrosCambios, 10, 240, 120, 20);
+
+        String cilindrosCambios[] = {"0", "3", "4", "5", "6", "8", "10", "12", "16"};
+        SpinnerListModel modeloCilCambios = new SpinnerListModel(cilindrosCambios);
+        numCilindrosCambios = new JSpinner(modeloCilCambios);
+        agregarAInternal(IF_Cambios, numCilindrosCambios, 135, 243, 50, 25);
+
+        JLabel txtCapacidadCambios = new JLabel("Capacidad de Personas:");
+        agregarAInternal(IF_Cambios, txtCapacidadCambios, 10, 370, 140, 20);
+
+        String capacidadesCambios[] = {"0", "2", "4", "5", "7", "8", "12", "15"};
+        SpinnerListModel modeloCapCambios = new SpinnerListModel(capacidadesCambios);
+        capacidadCambios = new JSpinner(modeloCapCambios);
+        agregarAInternal(IF_Cambios, capacidadCambios, 160, 370, 50, 25);
+
+        JLabel txtPuertasCambios = new JLabel("Número de Puertas:");
+        agregarAInternal(IF_Cambios, txtPuertasCambios, 10, 270, 120, 20);
+
+        numPuertasCambios = new JComboBox<>(new Integer[]{0, 2, 3, 4, 5});
+        agregarAInternal(IF_Cambios, numPuertasCambios, 160, 273, 50, 25);
+
+        JLabel txtPesoCambios = new JLabel("Peso:");
+        agregarAInternal(IF_Cambios,txtPesoCambios,10,330,80,20);
+
+        pesoCambios = new JTextField();
+        agregarAInternal(IF_Cambios,pesoCambios,135,333,150,25);
+
+        JLabel txtColorCambios = new JLabel("Color:");
+        agregarAInternal(IF_Cambios, txtColorCambios, 10, 300, 120, 20);
+
+        String[] coloresAutoCambios = {
+                "Elige color..", "Negro", "Blanco", "Gris", "Plateado", "Rojo", "Azul",
+                "Verde", "Amarillo", "Naranja", "Café", "Dorado", "Beige",
+                "Vino", "Azul Marino", "Gris Oxford"
+        };
+
+        colorCambios = new JComboBox<>(coloresAutoCambios);
+        agregarAInternal(IF_Cambios, colorCambios, 135, 303, 120, 25);
+
+        String[] columnasCambios = {"Num_Vehiculo", "Modelo", "País", "Fecha Fab", "Precio", "Cilindros", "Capacidad", "Puertas", "Color"};
+        String[][] datosCambios = {
+                {"", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", ""}
+        };
+        tablaVehiculosCambios = new JTable(datosCambios, columnasCambios);
+        tablaVehiculosCambios.setRowHeight(20);
+        tablaVehiculosCambios.setPreferredScrollableViewportSize(new Dimension(660, 150));
+
+        JScrollPane scrollTablaCambios = new JScrollPane(tablaVehiculosCambios);
+        agregarAInternal(IF_Cambios,scrollTablaCambios,10, 410, 640, 150);
+
+        btnBuscarCambios = new JButton("Buscar");
+        agregarAInternal(IF_Cambios, btnBuscarCambios, 320,68,110,30);
+
+        btnRestablecerCambios = new JButton("Restablecer");
+        agregarAInternal(IF_Cambios, btnRestablecerCambios, 490, 170,150,30);
+
+        btnGuardarCambios = new JButton("Guardar Cambios");
+        agregarAInternal(IF_Cambios, btnGuardarCambios, 490,240,150,30);
+
+        btnCancelarCambios = new JButton("Cancelar");
+        agregarAInternal(IF_Cambios, btnCancelarCambios, 490,310,150,30);
 
         IF_Cambios.add(panelCambios);
-        IF_Cambios.setSize(700, 500);
-        IF_Cambios.setLocation(50, 50);
+        IF_Cambios.add(panelDerechoCambios);
         desktopPane.add(IF_Cambios);
+        IF_Cambios.setLocation(0, 0);
+        try {
+            IF_Cambios.setMaximum(true);
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        }
+
 
         // IF Consultas
         IF_Consultas = new JInternalFrame("CONSULTAS", true, true, true, true);
@@ -421,9 +581,13 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
         agregarComponentePanel(panelConsultas,txtConsultas,10, 25, 200, 20);
 
         IF_Consultas.add(panelConsultas);
-        IF_Consultas.setSize(700, 500);
-        IF_Consultas.setLocation(50, 50);
         desktopPane.add(IF_Consultas);
+        IF_Consultas.setLocation(0, 0);
+        try {
+            IF_Consultas.setMaximum(true);
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        }
 
         setVisible(true);
     }
