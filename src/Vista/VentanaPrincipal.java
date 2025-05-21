@@ -69,7 +69,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
 
         // IF Altas
         IF_Altas = new JInternalFrame("ALTAS", true, true, true, true);
-
+        IF_Altas.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
         IF_Altas.setLayout(null);
 
         JPanel panelAltas = new JPanel(null);
@@ -90,7 +90,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
 
         // IF Bajas
         IF_Bajas = new JInternalFrame("BAJAS", true, true, true, true);
-
+        IF_Bajas.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
         IF_Bajas.setLayout(null);
 
         JPanel panelBajas = new JPanel(null);
@@ -112,7 +112,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
 
         // IF Cambios
         IF_Cambios = new JInternalFrame("MODIFICAR", true, true, true, true);
-
+        IF_Cambios.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
         IF_Cambios.setLayout(null);
 
         JPanel panelCambios = new JPanel(null);
@@ -131,7 +131,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
 
         // IF Consultas
         IF_Consultas = new JInternalFrame("CONSULTAS", true, true, true, true);
-
+        IF_Consultas.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
         IF_Consultas.setLayout(null);
 
         JPanel panelConsultas = new JPanel(null);
