@@ -14,7 +14,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
     JButton btnToolAgregar, btnToolEliminar, btnToolCambiar, btnToolConsultar, btnAgregar, btnRestablecerAltas, btnCancelarAltas;
     JInternalFrame IF_Altas, IF_Bajas, IF_Cambios, IF_Consultas;
 
-    //Para Altas
+
     JTextField idVehiculoAltas, modeloAltas, pesoAltas;
     JFormattedTextField precioListaAltas;
     JSpinner numCilindrosAltas, capacidadAltas;
@@ -175,6 +175,11 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
         numPuertasAltas = new JComboBox<>(new Integer[]{0, 2, 3, 4, 5});
         agregarAInternal(IF_Altas, numPuertasAltas, 135, 273, 60, 25);
 
+        JLabel txtPeso = new JLabel("Peso:");
+        agregarAInternal(IF_Altas,txtPeso,255,273,80,20);
+
+        pesoAltas = new JTextField();
+        agregarAInternal(IF_Altas,pesoAltas,301,273,100,25);
 
         JLabel txtColor = new JLabel("Color:");
         agregarAInternal(IF_Altas, txtColor, 10, 300, 120, 20);
