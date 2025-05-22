@@ -850,7 +850,95 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
 
         JPanel panelConsultas = new JPanel(null);
         panelConsultas.setBackground(Color.BLUE);
-        panelConsultas.setBounds(0, 0, 700, 60);
+        panelConsultas.setBounds(0, 0, 650, 60);
+
+
+        JPanel panelDerechoConsultas = new JPanel();
+        panelDerechoConsultas.setBackground(new Color(60, 63, 65));
+        panelDerechoConsultas.setBounds(650, 0, 160, 700);
+        panelDerechoConsultas.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100), 2));
+        panelDerechoConsultas.setLayout(null);
+
+        logoIcon = new ImageIcon("img/logo.png");
+        Image logoRedimensionado4 = logoIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        labelLogo = new JLabel(new ImageIcon(logoRedimensionado4));
+        agregarComponentePanel(panelDerechoConsultas, labelLogo, -20, 10, 200, 200);
+
+        inicioIcon = new ImageIcon("img/inicio.png");
+        btnInicio = new JButton("Inicio", new ImageIcon(inicioIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
+        btnInicio.setFont(new Font("Arial", Font.BOLD, 12));
+        btnInicio.setBackground(new Color(70, 130, 180));
+        btnInicio.setForeground(Color.WHITE);
+        btnInicio.setFocusPainted(false);
+        agregarComponentePanel(panelDerechoConsultas, btnInicio, 15, 220, 130, 30);
+
+        personalIcon = new ImageIcon("img/personal.png");
+        iconoPersonal = new JLabel(new ImageIcon(personalIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+        agregarComponentePanel(panelDerechoConsultas, iconoPersonal, 15, 260, 25, 25);
+
+        textoPersonal = new JLabel("Personal");
+        textoPersonal.setForeground(Color.WHITE);
+        textoPersonal.setFont(new Font("Arial", Font.PLAIN, 12));
+        agregarComponentePanel(panelDerechoConsultas, textoPersonal, 50, 260, 100, 25);
+
+        encargadoIcon = new ImageIcon("img/encargado.png");
+        iconoEncargado = new JLabel(new ImageIcon(encargadoIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+        agregarComponentePanel(panelDerechoConsultas, iconoEncargado, 15, 300, 25, 25);
+
+        textoEncargado = new JLabel("Encargado");
+        textoEncargado.setForeground(Color.WHITE);
+        textoEncargado.setFont(new Font("Arial", Font.PLAIN, 12));
+        agregarComponentePanel(panelDerechoConsultas, textoEncargado, 50, 300, 100, 25);
+
+        telefonoIcon = new ImageIcon("img/telefono.png");
+        iconoTelefono = new JLabel(new ImageIcon(telefonoIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+        agregarComponentePanel(panelDerechoConsultas, iconoTelefono, 15, 340, 25, 25);
+
+        textoTelefono = new JLabel("55-1234-5678");
+        textoTelefono.setForeground(Color.WHITE);
+        textoTelefono.setFont(new Font("Arial", Font.PLAIN, 12));
+        agregarComponentePanel(panelDerechoConsultas, textoTelefono, 50, 340, 100, 25);
+
+        correoIcon = new ImageIcon("img/correo.png");
+        iconoCorreo = new JLabel(new ImageIcon(correoIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+        agregarComponentePanel(panelDerechoConsultas, iconoCorreo, 15, 380, 25, 25);
+
+        textoCorreo = new JLabel("autos@gmail.com");
+        textoCorreo.setForeground(Color.WHITE);
+        textoCorreo.setFont(new Font("Arial", Font.PLAIN, 10));
+        agregarComponentePanel(panelDerechoConsultas, textoCorreo, 50, 380, 100, 25);
+
+        autoIcon = new ImageIcon("img/autos.png");
+        iconoAuto = new JLabel(new ImageIcon(autoIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+        agregarComponentePanel(panelDerechoConsultas, iconoAuto, 15, 420, 25, 25);
+
+        textoAuto = new JLabel("Autos");
+        textoAuto.setForeground(Color.WHITE);
+        textoAuto.setFont(new Font("Arial", Font.PLAIN, 12));
+        agregarComponentePanel(panelDerechoConsultas, textoAuto, 50, 420, 100, 25);
+
+        configIcon = new ImageIcon("img/config.png");
+        iconoConfig = new JLabel(new ImageIcon(configIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+        agregarComponentePanel(panelDerechoConsultas, iconoConfig, 15, 460, 25, 25);
+
+        textoConfig = new JLabel("Configuración");
+        textoConfig.setForeground(Color.WHITE);
+        textoConfig.setFont(new Font("Arial", Font.PLAIN, 12));
+        agregarComponentePanel(panelDerechoConsultas, textoConfig, 50, 460, 100, 25);
+
+        JSeparator separador4 = new JSeparator(SwingConstants.HORIZONTAL);
+        separador.setForeground(new Color(150, 150, 150));
+        agregarComponentePanel(panelDerechoConsultas, separador4, 10, 500, 140, 2);
+
+        registrosIcon = new ImageIcon("img/registros.png");
+        btnRegistrosConsultas = new JButton("Registros", new ImageIcon(registrosIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
+        btnRegistrosConsultas.setFont(new Font("Arial", Font.BOLD, 12));
+        btnRegistrosConsultas.setBackground(new Color(70, 130, 180));
+        btnRegistrosConsultas.setForeground(Color.WHITE);
+        btnRegistrosConsultas.setFocusPainted(false);
+        agregarComponentePanel(panelDerechoConsultas, btnRegistrosConsultas, 15, 520, 130, 30);
+
+
 
         JLabel txtConsultas = new JLabel("CONSULTAR VEHICULOS");
         txtConsultas.setFont(new Font("Roboto", Font.BOLD, 15));
@@ -858,6 +946,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
         agregarComponentePanel(panelConsultas,txtConsultas,10, 25, 200, 20);
 
         IF_Consultas.add(panelConsultas);
+        IF_Consultas.add(panelDerechoConsultas);
         desktopPane.add(IF_Consultas);
         IF_Consultas.setLocation(0, 0);
         try {
