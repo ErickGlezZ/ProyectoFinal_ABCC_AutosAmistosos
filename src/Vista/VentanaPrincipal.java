@@ -25,10 +25,11 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
     JTable tablaVehiculosAltas, tablaVehiculosBajas, tablaVehiculosCambios;
 
     ImageIcon logoIcon, inicioIcon, personalIcon, encargadoIcon, telefonoIcon, correoIcon, autoIcon, configIcon, registrosIcon;
-
     JLabel labelLogo, iconoPersonal, textoPersonal, iconoEncargado, textoEncargado, iconoTelefono, textoTelefono, iconoCorreo, textoCorreo, iconoAuto, textoAuto, iconoConfig, textoConfig;
-
     JButton btnInicio, btnRegistrosAltas, btnRegistrosBajas, btnRegistrosCambios, btnRegistrosConsultas;
+
+    JRadioButton rbTodos, rbModelo, rbPaisFab, rbFechaFab, rbPrecioLista, rbCilindros, rbNumPuertas, rbColor, rbPeso, rbCapacidad;
+    ButtonGroup rbGroup;
 
     public VentanaPrincipal() {
 
@@ -944,6 +945,52 @@ public class VentanaPrincipal extends JFrame implements ActionListener{
         txtConsultas.setFont(new Font("Roboto", Font.BOLD, 15));
         txtConsultas.setForeground(Color.WHITE);
         agregarComponentePanel(panelConsultas,txtConsultas,10, 25, 200, 20);
+
+
+        //JLabel txtCriterio = new JLabel("Selecciona criterio de busqueda:");
+        //agregarAInternal(IF_Consultas,txtCriterio,10,80,200,25);
+
+        rbTodos = new JRadioButton("TODOS.");
+        agregarAInternal(IF_Consultas,rbTodos, 10,100,80,20);
+
+        rbModelo = new JRadioButton("MODELO:");
+        agregarAInternal(IF_Consultas,rbModelo,100,100,80,20);
+
+        rbPaisFab = new JRadioButton("PAIS FABRICACION:");
+        agregarAInternal(IF_Consultas,rbPaisFab,100,130,140,20);
+
+        rbFechaFab = new JRadioButton("FECHA FABRICACION:");
+        agregarAInternal(IF_Consultas,rbFechaFab,100,160,150,20);
+
+        rbPrecioLista = new JRadioButton("PRECIO LISTA:");
+        agregarAInternal(IF_Consultas,rbPrecioLista,100,190,120,20);
+
+        rbCilindros = new JRadioButton("CILINDROS:");
+        agregarAInternal(IF_Consultas,rbCilindros,100,220,100,20);
+
+        rbNumPuertas = new JRadioButton("NUMERO PUERTAS:");
+        agregarAInternal(IF_Consultas,rbNumPuertas,100,250,140,20);
+
+        rbColor = new JRadioButton("COLOR:");
+        agregarAInternal(IF_Consultas,rbColor,100,280,100,20);
+
+        rbPeso = new JRadioButton("PESO:");
+        agregarAInternal(IF_Consultas,rbPeso,100,310,80,20);
+
+        rbCapacidad = new JRadioButton("CAPACIDAD PERSONAS:");
+        agregarAInternal(IF_Consultas,rbCapacidad,100,340,170,20);
+
+        rbGroup = new ButtonGroup();
+        rbGroup.add(rbTodos);
+        rbGroup.add(rbModelo);
+        rbGroup.add(rbPaisFab);
+        rbGroup.add(rbFechaFab);
+        rbGroup.add(rbPrecioLista);
+        rbGroup.add(rbCilindros);
+        rbGroup.add(rbNumPuertas);
+        rbGroup.add(rbColor);
+        rbGroup.add(rbPeso);
+        rbGroup.add(rbCapacidad);
 
         IF_Consultas.add(panelConsultas);
         IF_Consultas.add(panelDerechoConsultas);
