@@ -114,10 +114,6 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    public void agregarComponente(JPanel panel, JComponent componente, int x, int y, int w, int h) {
-        componente.setBounds(x, y, w, h);
-        panel.add(componente);
-    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {

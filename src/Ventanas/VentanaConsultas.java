@@ -5,7 +5,13 @@ import java.awt.*;
 
 public class VentanaConsultas extends JInternalFrame {
 
-    JButton btnRegistrosConsultas, btnInicio;
+    JButton btnRegistrosConsultas, btnInicio, btnBuscarConsultas, btnRestablecerConsultas, btnCancelarConsultas, btnPrimerReg, btnAnteriorReg, btnSiguienteReg, btnUltimoReg;
+    JTextField modeloConsultas, pesoConsultas, fechaFabConsultas, cajaIndice;
+    JFormattedTextField precioListaConsultas;
+    JSpinner numCilindrosConsultas, capacidadConsultas;
+    JComboBox<Integer> numPuertasConsultas, diaConsultas, añoConsultas;
+    JComboBox<String> paisFabConsultas, mesConsultas, colorConsultas;
+    JTable  tablaVehiculosConsultas;
     ButtonGroup rbGroup;
     JRadioButton rbTodos, rbModelo, rbPaisFab, rbFechaFab, rbPrecioLista, rbCilindros, rbNumPuertas, rbColor, rbPeso, rbCapacidad;
 
@@ -126,29 +132,75 @@ public class VentanaConsultas extends JInternalFrame {
         rbModelo = new JRadioButton("MODELO:");
         agregarAInternal(rbModelo,100,100,80,20);
 
+        modeloConsultas = new JTextField();
+        agregarAInternal(modeloConsultas,270,100,120,25);
+
         rbPaisFab = new JRadioButton("PAIS FABRICACION:");
         agregarAInternal(rbPaisFab,100,130,140,20);
+
+        String[] paisesFabricantesConsultas = {
+                "Elige un pais..", "Alemania", "Argentina", "Australia", "Austria", "Bélgica",
+                "Brasil", "Canadá", "China", "Corea del Sur", "Chequia",
+                "Eslovaquia", "España", "Estados Unidos", "Francia", "Finlandia",
+                "Hungría", "India", "Indonesia", "Irán", "Italia",
+                "Japón", "Malasia", "México", "Países Bajos", "Polonia",
+                "Portugal", "Reino Unido", "Rusia", "Rumania", "Serbia",
+                "Sudáfrica", "Suecia", "Suiza", "Tailandia", "Taiwán",
+                "Túnez", "Turquía", "Ucrania", "Uzbekistán", "Vietnam"
+        };
+        paisFabConsultas = new JComboBox<>(paisesFabricantesConsultas);
+        agregarAInternal(paisFabConsultas,270,130,120,25);
 
         rbFechaFab = new JRadioButton("FECHA FABRICACION:");
         agregarAInternal(rbFechaFab,100,160,150,20);
 
+        fechaFabConsultas = new JTextField();
+        agregarAInternal(fechaFabConsultas,270,160,120,25);
+
         rbPrecioLista = new JRadioButton("PRECIO LISTA:");
         agregarAInternal(rbPrecioLista,100,190,120,20);
+
+        precioListaConsultas = new JFormattedTextField();
+        agregarAInternal(precioListaConsultas,270,190,120,25);
 
         rbCilindros = new JRadioButton("CILINDROS:");
         agregarAInternal(rbCilindros,100,220,100,20);
 
+        String cilindrosConsultas[] = {"0", "3", "4", "5", "6", "8", "10", "12", "16"};
+        SpinnerListModel modeloCilConsultas = new SpinnerListModel(cilindrosConsultas);
+        numCilindrosConsultas = new JSpinner(modeloCilConsultas);
+        agregarAInternal(numCilindrosConsultas,270,220,50,25);
+
         rbNumPuertas = new JRadioButton("NUMERO PUERTAS:");
         agregarAInternal(rbNumPuertas,100,250,140,20);
+
+        numPuertasConsultas = new JComboBox<>(new Integer[]{0, 2, 3, 4, 5});
+        agregarAInternal(numPuertasConsultas,270,250,50,25);
 
         rbColor = new JRadioButton("COLOR:");
         agregarAInternal(rbColor,100,280,100,20);
 
+        String[] coloresAutoConsultas = {
+                "Elige color..", "Negro", "Blanco", "Gris", "Plateado", "Rojo", "Azul",
+                "Verde", "Amarillo", "Naranja", "Café", "Dorado", "Beige",
+                "Vino", "Azul Marino", "Gris Oxford"
+        };
+        colorConsultas = new JComboBox<>(coloresAutoConsultas);
+        agregarAInternal(colorConsultas,270,280,120,25);
+
         rbPeso = new JRadioButton("PESO:");
         agregarAInternal(rbPeso,100,310,80,20);
 
+        pesoConsultas = new JTextField();
+        agregarAInternal(pesoConsultas,270,310,120,25);
+
         rbCapacidad = new JRadioButton("CAPACIDAD PERSONAS:");
         agregarAInternal(rbCapacidad,100,340,170,20);
+
+        String capacidadesConsultas[] = {"0", "2", "4", "5", "7", "8", "12", "15"};
+        SpinnerListModel modeloCapConsultas = new SpinnerListModel(capacidadesConsultas);
+        capacidadConsultas = new JSpinner(modeloCapConsultas);
+        agregarAInternal(capacidadConsultas,270,340,50,25);
 
         rbGroup = new ButtonGroup();
         rbGroup.add(rbTodos);
@@ -162,9 +214,30 @@ public class VentanaConsultas extends JInternalFrame {
         rbGroup.add(rbPeso);
         rbGroup.add(rbCapacidad);
 
+        String[] columnasConsultas = {"Num_Vehiculo", "Modelo", "País", "Fecha Fab", "Precio", "Cilindros", "Capacidad", "Puertas", "Color"};
+        String[][] datosConsultas = {
+                {"", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", ""}
+        };
+        tablaVehiculosConsultas = new JTable(datosConsultas, columnasConsultas);
+        tablaVehiculosConsultas.setRowHeight(20);
+        tablaVehiculosConsultas.setPreferredScrollableViewportSize(new Dimension(660, 150));
 
+        JScrollPane scrollTablaConsultas = new JScrollPane(tablaVehiculosConsultas);
+        agregarAInternal(scrollTablaConsultas,10, 410, 640, 150);
 
+        btnBuscarConsultas = new JButton("Buscar");
+        agregarAInternal(btnBuscarConsultas,490, 100,110,30);
 
+        btnRestablecerConsultas = new JButton("Restablecer");
+        agregarAInternal(btnRestablecerConsultas,490, 170,110,30);
+
+        btnCancelarConsultas = new JButton("Cancelar");
+        agregarAInternal(btnCancelarConsultas,490,240,110,30);
 
 
         add(panelConsultas);

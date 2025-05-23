@@ -149,7 +149,7 @@ public class VentanaCambios extends JInternalFrame {
         agregarAInternal(txtPaisFabCambios,10,150,120,20);
 
         String[] paisesFabricantesCambios = {
-                "Elige una opc..", "Alemania", "Argentina", "Australia", "Austria", "Bélgica",
+                "Elige un pais..", "Alemania", "Argentina", "Australia", "Austria", "Bélgica",
                 "Brasil", "Canadá", "China", "Corea del Sur", "Chequia",
                 "Eslovaquia", "España", "Estados Unidos", "Francia", "Finlandia",
                 "Hungría", "India", "Indonesia", "Irán", "Italia",
@@ -166,14 +166,16 @@ public class VentanaCambios extends JInternalFrame {
         JLabel txtFechaFabCambios = new JLabel("Fecha de Fabricación:");
         agregarAInternal(txtFechaFabCambios, 10, 180, 150, 20);
 
+        String[] mesesCambios = {
+                "Elije un mes..", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        };
         diaCambios = new JComboBox<>();
         for (int d = 0; d <= 31; d++) diaCambios.addItem(d);
         agregarAInternal(diaCambios, 160, 180, 50, 25);
 
-        mesCambios = new JComboBox<>(new String[]{
-                "Elije", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-        });
+        mesCambios = new JComboBox<>(mesesCambios);
+
         agregarAInternal(mesCambios, 215, 180, 100, 25);
 
         añoCambios = new JComboBox<>();

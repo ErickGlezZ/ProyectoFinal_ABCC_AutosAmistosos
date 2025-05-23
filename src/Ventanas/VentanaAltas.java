@@ -11,7 +11,7 @@ public class VentanaAltas extends JInternalFrame {
     JTextField idVehiculoAltas, modeloAltas, pesoAltas;
     JFormattedTextField precioListaAltas;
     JSpinner numCilindrosAltas, capacidadAltas;
-    JComboBox<Integer> numPuertasAltas, fechaFabAltas, diaAltas, añoAltas;
+    JComboBox<Integer> numPuertasAltas, diaAltas, añoAltas;
     JComboBox<String> paisFabAltas, mesAltas, colorAltas;
     JTable tablaVehiculosAltas;
 
@@ -147,7 +147,7 @@ public class VentanaAltas extends JInternalFrame {
         agregarAInternal(txtPaisFabAltas,10,150,120,20);
 
         String[] paisesFabricantesAltas = {
-                "Elige una opc..", "Alemania", "Argentina", "Australia", "Austria", "Bélgica",
+                "Elige un pais..", "Alemania", "Argentina", "Australia", "Austria", "Bélgica",
                 "Brasil", "Canadá", "China", "Corea del Sur", "Chequia",
                 "Eslovaquia", "España", "Estados Unidos", "Francia", "Finlandia",
                 "Hungría", "India", "Indonesia", "Irán", "Italia",
@@ -169,11 +169,11 @@ public class VentanaAltas extends JInternalFrame {
         for (int d = 0; d <= 31; d++) diaAltas.addItem(d);
         agregarAInternal(diaAltas, 160, 180, 50, 25);
 
-
-        mesAltas = new JComboBox<>(new String[]{
-                "Elije", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        String[] mesesAltas = {
+                "Elije un mes..", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-        });
+        };
+        mesAltas = new JComboBox<>(mesesAltas);
         agregarAInternal(mesAltas, 215, 180, 100, 25);
 
 

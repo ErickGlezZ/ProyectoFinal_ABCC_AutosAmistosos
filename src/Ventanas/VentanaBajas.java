@@ -152,7 +152,7 @@ public class VentanaBajas extends JInternalFrame {
         agregarAInternal(txtPaisFabBajas,10,150,120,20);
 
         String[] paisesFabricantesBajas = {
-                "Elige una opc..", "Alemania", "Argentina", "Australia", "Austria", "Bélgica",
+                "Elige un pais..", "Alemania", "Argentina", "Australia", "Austria", "Bélgica",
                 "Brasil", "Canadá", "China", "Corea del Sur", "Chequia",
                 "Eslovaquia", "España", "Estados Unidos", "Francia", "Finlandia",
                 "Hungría", "India", "Indonesia", "Irán", "Italia",
@@ -175,10 +175,11 @@ public class VentanaBajas extends JInternalFrame {
         agregarAInternal(diaBajas, 160, 180, 50, 25);
 
 
-        mesBajas = new JComboBox<>(new String[]{
-                "Elije", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        String[] mesesBajas = {
+                "Elije un mes..", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-        });
+        };
+        mesBajas = new JComboBox<>(mesesBajas);
         agregarAInternal(mesBajas, 215, 180, 100, 25);
 
 
