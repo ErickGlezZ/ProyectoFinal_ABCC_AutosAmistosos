@@ -239,6 +239,30 @@ public class VentanaConsultas extends JInternalFrame {
         btnCancelarConsultas = new JButton("Cancelar");
         agregarAInternal(btnCancelarConsultas,490,240,110,30);
 
+        //Barra Busqueda
+        btnPrimerReg = new JButton();
+        btnPrimerReg.setIcon(new ImageIcon(new ImageIcon("./img/doble_flecha_izq.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
+        agregarAInternal(btnPrimerReg,240,68,30,25);
+
+
+        btnAnteriorReg = new JButton();
+        btnAnteriorReg.setIcon(new ImageIcon(new ImageIcon("./img/flecha_izq.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
+        agregarAInternal(btnAnteriorReg,280,68,30,25);
+
+
+        cajaIndice = new JTextField("0");
+        cajaIndice.setFont(new Font("Arial", Font.BOLD, 18));
+        agregarAInternal(cajaIndice,320,68,40,25);
+
+
+        btnSiguienteReg = new JButton();
+        btnSiguienteReg.setIcon(new ImageIcon(new ImageIcon("./img/flecha_der.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
+        agregarAInternal(btnSiguienteReg,370,68,30,25);
+
+
+        btnUltimoReg = new JButton();
+        btnUltimoReg.setIcon(new ImageIcon(new ImageIcon("./img/doble_flecha_der.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
+        agregarAInternal(btnUltimoReg,410,68,30,25);
 
         add(panelConsultas);
         add(panelDerechoConsultas);
