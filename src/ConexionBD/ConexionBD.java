@@ -11,7 +11,7 @@ public class ConexionBD {
     private static ConexionBD instanciaConexion;
     private Connection conexion;
 
-    private final String URL = "jdbc:mysql://localhost:3306/BD_Topicos_2025";
+    private final String URL = "jdbc:mysql://localhost:3306/BD_Autos_Amistosos";
     private final String USUARIO = "root";
     private final String CONTRASEÑA = "itsj";
 
