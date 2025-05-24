@@ -38,8 +38,7 @@ public class VehiculoDAO {
                 vehiculo.getNumPuertas(),
                 vehiculo.getColor(),
                 vehiculo.getPeso(),
-                vehiculo.getCapacidadPersonas()
-        );
+                vehiculo.getCapacidadPersonas());
     }
 
     //===================BAJAS=====================
@@ -47,5 +46,23 @@ public class VehiculoDAO {
         String sql = "DELETE FROM Vehiculos WHERE Num_Vehiculo = ?";
         return  conexionBD.ejecutarInstruccionLMD(sql,numVehiculo);
 
+    }
+
+    //==================CAMBIOS=====================
+    public boolean editarVehiculo(Vehiculo vehiculo){
+        String sql = "UPDATE Vehiculos SET Modelo = ?, Pais_Fab = ?, Fecha_Fab = ?, Precio_Lista = ?, Num_Cilindros = ?, Num_Puertas = ?, Color = ?, Peso = ?, Cap_Personas = ? WHERE Num_Vehiculo = ?";
+
+        return conexionBD.ejecutarInstruccionLMD(sql,
+
+                vehiculo.getModelo(),
+                vehiculo.getPaisFab(),
+                vehiculo.getFechaFab(),
+                vehiculo.getPrecioLista(),
+                vehiculo.getNumCilindros(),
+                vehiculo.getNumPuertas(),
+                vehiculo.getColor(),
+                vehiculo.getPeso(),
+                vehiculo.getCapacidadPersonas(),
+                vehiculo.getNumVehiculo());
     }
 }

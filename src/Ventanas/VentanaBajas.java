@@ -1,6 +1,7 @@
 package Ventanas;
 
 import ConexionBD.ConexionBD;
+import Controlador.VehiculoDAO;
 import Modelo.ResultSetTableModel;
 
 import javax.swing.*;
@@ -29,6 +30,7 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
 
 
     ConexionBD conexionBD = ConexionBD.getInstancia();
+    VehiculoDAO vehiculoDAO = VehiculoDAO.getInstancia();
     public VentanaBajas(){
 
         super("BAJAS", true, true, false, true);
@@ -414,7 +416,14 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
             obtenerDatosVehiculo();
 
         } else if (componente == btnEliminar) {
-            
+
+            if (vehiculoDAO.eliminarVehiculo(cajaNumVehiculoBajas.getText())){
+                actualizarTabla(tablaVehiculosBajas);
+                JOptionPane.showMessageDialog(this, "Registro eliminado correctamente");
+            }else {
+                JOptionPane.showMessageDialog(this, "ERROR al eliminar el registro");
+            }
+
         } else if (componente == btnRestablecerBajas) {
             restablecerComponentes(cajaNumVehiculoBajas,cajaModeloBajas,cbPaisFabBajas,cbDiaBajas,cbMesBajas,cbAñoBajas,cajaPrecioListaBajas,numCilindrosBajas,cbNumPuertasBajas,cbColorBajas,cajaPesoBajas,capacidadBajas);
 
