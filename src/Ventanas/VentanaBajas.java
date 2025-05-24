@@ -1,24 +1,34 @@
 package Ventanas;
 
-import javax.swing.*;
-import java.awt.*;
-import java.text.NumberFormat;
+import ConexionBD.ConexionBD;
+import Modelo.ResultSetTableModel;
 
-public class VentanaBajas extends JInternalFrame {
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
+public class VentanaBajas extends JInternalFrame implements ActionListener {
 
     JButton  btnEliminar, btnRestablecerBajas, btnCancelarBajas, btnBuscarBajas, btnInicio, btnRegistrosBajas;
-    JTextField idVehiculoBajas, modeloBajas, pesoBajas;
-    JFormattedTextField precioListaBajas;
+    JTextField cajaNumVehiculoBajas, cajaModeloBajas, cajaPesoBajas, cajaPrecioListaBajas;
     JSpinner numCilindrosBajas, capacidadBajas;
-    JComboBox<Integer> numPuertasBajas, diaBajas, añoBajas;
-    JComboBox<String> paisFabBajas, mesBajas, colorBajas;
+    JComboBox<Integer> cbNumPuertasBajas, cbDiaBajas, cbAñoBajas;
+    JComboBox<String> cbPaisFabBajas, cbMesBajas, cbColorBajas;
     JTable tablaVehiculosBajas;
 
     ImageIcon logoIcon, inicioIcon, personalIcon, encargadoIcon, telefonoIcon, correoIcon, autoIcon, configIcon, registrosIcon;
     JLabel labelLogo, iconoPersonal, textoPersonal, iconoEncargado, textoEncargado, iconoTelefono, textoTelefono, iconoCorreo, textoCorreo, iconoAuto, textoAuto, iconoConfig, textoConfig;
 
 
-
+    ConexionBD conexionBD = ConexionBD.getInstancia();
     public VentanaBajas(){
 
         super("BAJAS", true, true, false, true);
@@ -135,8 +145,8 @@ public class VentanaBajas extends JInternalFrame {
         JLabel txtIdVehiculoBajas = new JLabel("Numero Vehiculo:");
         agregarAInternal(txtIdVehiculoBajas,10,70,120,20);
 
-        idVehiculoBajas = new JTextField();
-        agregarAInternal(idVehiculoBajas,135, 68,100,30);
+        cajaNumVehiculoBajas = new JTextField();
+        agregarAInternal(cajaNumVehiculoBajas,135, 68,100,30);
 
         JSeparator separadorBajas = new JSeparator();
         separadorBajas.setForeground(Color.GRAY);
@@ -145,14 +155,14 @@ public class VentanaBajas extends JInternalFrame {
         JLabel txtModeloBajas = new JLabel("Modelo:");
         agregarAInternal(txtModeloBajas,10,113,120,20);
 
-        modeloBajas = new JTextField();
-        agregarAInternal(modeloBajas,135,113,100,25);
+        cajaModeloBajas = new JTextField();
+        agregarAInternal(cajaModeloBajas,135,113,100,25);
 
         JLabel txtPaisFabBajas = new JLabel("Pais de Fabricacion");
         agregarAInternal(txtPaisFabBajas,10,150,120,20);
 
         String[] paisesFabricantesBajas = {
-                "Elige un pais..", "Alemania", "Argentina", "Australia", "Austria", "Bélgica",
+                "Elige pais..","Alemania", "Argentina", "Australia", "Austria", "Bélgica",
                 "Brasil", "Canadá", "China", "Corea del Sur", "Chequia",
                 "Eslovaquia", "España", "Estados Unidos", "Francia", "Finlandia",
                 "Hungría", "India", "Indonesia", "Irán", "Italia",
@@ -162,39 +172,40 @@ public class VentanaBajas extends JInternalFrame {
                 "Túnez", "Turquía", "Ucrania", "Uzbekistán", "Vietnam"
         };
 
-        paisFabBajas = new JComboBox<>(paisesFabricantesBajas);
-        paisFabBajas.setEditable(false);
-        agregarAInternal(paisFabBajas,135,148,120,25);
+        cbPaisFabBajas = new JComboBox<>(paisesFabricantesBajas);
+        cbPaisFabBajas.setEditable(false);
+        agregarAInternal(cbPaisFabBajas,135,148,120,25);
 
         JLabel txtFechaFabBajas = new JLabel("Fecha de Fabricación:");
         agregarAInternal(txtFechaFabBajas, 10, 180, 150, 20);
 
 
-        diaBajas = new JComboBox<>();
-        for (int d = 0; d <= 31; d++) diaBajas.addItem(d);
-        agregarAInternal(diaBajas, 160, 180, 50, 25);
+        cbDiaBajas = new JComboBox<>();
+        for (int d = 0; d <= 31; d++) cbDiaBajas.addItem(d);
+        agregarAInternal(cbDiaBajas, 160, 180, 50, 25);
 
 
         String[] mesesBajas = {
-                "Elije un mes..", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                "Elige mes..","Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
         };
-        mesBajas = new JComboBox<>(mesesBajas);
-        agregarAInternal(mesBajas, 215, 180, 100, 25);
+        cbMesBajas = new JComboBox<>(mesesBajas);
+        agregarAInternal(cbMesBajas, 215, 180, 100, 25);
 
 
-        añoBajas = new JComboBox<>();
+        cbAñoBajas = new JComboBox<>();
+        cbAñoBajas.addItem(0);
         for (int a = 1900; a <= 2025; a++) {
-            añoBajas.addItem(a);
+            cbAñoBajas.addItem(a);
         }
-        agregarAInternal(añoBajas, 320, 180, 80, 25);
+        agregarAInternal(cbAñoBajas, 320, 180, 80, 25);
 
 
         JLabel txtPrecioListaBajas = new JLabel("Precio de Lista:");
         agregarAInternal(txtPrecioListaBajas, 10, 210, 120, 20);
 
-        precioListaBajas = new JFormattedTextField(NumberFormat.getNumberInstance());
-        agregarAInternal(precioListaBajas, 135, 213, 150, 25);
+        cajaPrecioListaBajas = new JTextField();
+        agregarAInternal(cajaPrecioListaBajas, 135, 213, 150, 25);
 
 
         JLabel txtCilindrosBajas = new JLabel("Cilindros:");
@@ -219,26 +230,26 @@ public class VentanaBajas extends JInternalFrame {
         JLabel txtPuertasBajas = new JLabel("Número de Puertas:");
         agregarAInternal(txtPuertasBajas, 10, 270, 120, 20);
 
-        numPuertasBajas = new JComboBox<>(new Integer[]{0, 2, 3, 4, 5});
-        agregarAInternal(numPuertasBajas, 160, 273, 50, 25);
+        cbNumPuertasBajas = new JComboBox<>(new Integer[]{0, 2, 3, 4, 5});
+        agregarAInternal(cbNumPuertasBajas, 160, 273, 50, 25);
 
         JLabel txtPesoBajas = new JLabel("Peso:");
         agregarAInternal(txtPesoBajas,10,330,80,20);
 
-        pesoBajas = new JTextField();
-        agregarAInternal(pesoBajas,135,333,150,25);
+        cajaPesoBajas = new JTextField();
+        agregarAInternal(cajaPesoBajas,135,333,150,25);
 
         JLabel txtColorBajas = new JLabel("Color:");
         agregarAInternal(txtColorBajas, 10, 300, 120, 20);
 
         String[] coloresAutoBajas = {
-                "Elige Color..", "Negro", "Blanco", "Gris", "Plateado", "Rojo", "Azul",
+                "Elije color..", "Negro", "Blanco", "Gris", "Plateado", "Rojo", "Azul",
                 "Verde", "Amarillo", "Naranja", "Café", "Dorado", "Beige",
                 "Vino", "Azul Marino", "Gris Oxford"
         };
 
-        colorBajas = new JComboBox<>(coloresAutoBajas);
-        agregarAInternal(colorBajas, 135, 303, 120, 25);
+        cbColorBajas = new JComboBox<>(coloresAutoBajas);
+        agregarAInternal(cbColorBajas, 135, 303, 120, 25);
 
 
         String[] columnasBajas = {"Num_Vehiculo", "Modelo", "País", "Fecha Fab", "Precio", "Cilindros", "Capacidad", "Puertas", "Color"};
@@ -259,21 +270,34 @@ public class VentanaBajas extends JInternalFrame {
 
         btnBuscarBajas = new JButton("Buscar");
         agregarAInternal(btnBuscarBajas,320,68,110,30);
+        btnBuscarBajas.addActionListener(this);
 
         btnEliminar = new JButton("Eliminar");
         agregarAInternal(btnEliminar,490, 120,110,30);
+        btnEliminar.addActionListener(this);
 
         btnRestablecerBajas = new JButton("Restablecer");
         agregarAInternal(btnRestablecerBajas,490, 190,110,30);
+        btnRestablecerBajas.addActionListener(this);
 
         btnCancelarBajas = new JButton("Cancelar");
         agregarAInternal(btnCancelarBajas,490,260,110,30);
+        btnCancelarBajas.addActionListener(this);
+
+        cajaModeloBajas.setEnabled(false);
+        cbPaisFabBajas.setEnabled(false);
+        cbDiaBajas.setEnabled(false);
+        cbMesBajas.setEnabled(false);
+        cbAñoBajas.setEnabled(false);
+        cajaPrecioListaBajas.setEnabled(false);
+        numCilindrosBajas.setEnabled(false);
+        cbNumPuertasBajas.setEnabled(false);
+        cbColorBajas.setEnabled(false);
+        cajaPesoBajas.setEnabled(false);
+        capacidadBajas.setEnabled(false);
 
 
-
-
-
-
+        actualizarTabla(tablaVehiculosBajas);
         add(panelBajas);
         add(panelDerechoBajas);
     }
@@ -287,4 +311,125 @@ public class VentanaBajas extends JInternalFrame {
         componente.setBounds(x, y, w, h);
         this.add(componente);
     }
+
+    public void actualizarTabla(JTable tabla){
+        final String CONTROLADOR_JDBC = "com.mysql.cj.jdbc.Driver";
+        final String URL = "jdbc:mysql://localhost:3306/BD_Autos_Amistosos";
+        final String CONSULTA = "SELECT * FROM vehiculos";
+
+        try {
+            ResultSetTableModel modelo = new ResultSetTableModel(CONTROLADOR_JDBC, URL, CONSULTA);
+            tabla.setModel(modelo);
+
+            // Aquí pones el renderer para la columna de fecha
+            int columnaFecha = 3; // Cambia 3 por el índice real de la columna fecha en tu tabla
+            tabla.getColumnModel().getColumn(columnaFecha).setCellRenderer(new DefaultTableCellRenderer() {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                @Override
+                public void setValue(Object value) {
+                    if (value instanceof java.sql.Date) {
+                        LocalDate localDate = ((java.sql.Date) value).toLocalDate();
+                        setText(localDate.format(formatter));
+                    } else {
+                        super.setValue(value);
+                    }
+                }
+            });
+
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+    public void restablecerComponentes(JComponent ... componentes ) {
+
+        for (JComponent  c : componentes){
+            //System.out.println(c);
+            if(c instanceof JTextField) {
+                ((JTextField) c).setText("");
+            }
+            else if(c instanceof JComboBox) {
+                ((JComboBox) c).setSelectedIndex(0);
+            }
+            else if(c instanceof JPasswordField) {
+                ((JPasswordField) c).setText("");
+            }
+            else if(c instanceof JSpinner) {
+                ((JSpinner) c).setValue("0");
+            }
+            else if(c instanceof JRadioButton) {
+                ((JRadioButton) c).setSelected(true);
+            }
+            else if(c instanceof JCheckBox) {
+                ((JCheckBox) c).setSelected(false);
+            }
+        }
+
+    }
+
+    public void obtenerDatosVehiculo() {
+
+        String sql = "SELECT * FROM Vehiculos WHERE Num_Vehiculo = ?";
+
+        ResultSet rs = conexionBD.ejecutarConsultaSQL(sql, cajaNumVehiculoBajas.getText());
+
+        try {
+            if (rs != null && rs.next()) {
+                cajaModeloBajas.setText(rs.getString("Modelo"));
+                cbPaisFabBajas.setSelectedItem(rs.getString("Pais_Fab"));
+
+
+                Date fechaSql = rs.getDate("Fecha_Fab");
+                if (fechaSql != null) {
+                    LocalDate localDate = ((java.sql.Date) fechaSql).toLocalDate();
+                    cbAñoBajas.setSelectedItem(localDate.getYear());
+                    cbMesBajas.setSelectedIndex(localDate.getMonthValue());
+                    cbDiaBajas.setSelectedItem(localDate.getDayOfMonth());
+
+                }
+                    cajaPrecioListaBajas.setText(rs.getString("Precio_Lista"));
+                    numCilindrosBajas.setValue(rs.getString("Num_Cilindros"));
+                    cbNumPuertasBajas.setSelectedItem(rs.getInt("Num_Puertas"));
+                    cbColorBajas.setSelectedItem(rs.getString("Color"));
+                    cajaPesoBajas.setText(rs.getString("Peso"));
+                    capacidadBajas.setValue(rs.getString("Cap_Personas"));
+
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al obtener los datos del vehiculo.");
+        }
+    }
+
+        @Override
+    public void actionPerformed(ActionEvent e) {
+        
+        Object componente = e.getSource();
+        
+        if (componente == btnBuscarBajas){
+            obtenerDatosVehiculo();
+
+        } else if (componente == btnEliminar) {
+            
+        } else if (componente == btnRestablecerBajas) {
+            restablecerComponentes(cajaNumVehiculoBajas,cajaModeloBajas,cbPaisFabBajas,cbDiaBajas,cbMesBajas,cbAñoBajas,cajaPrecioListaBajas,numCilindrosBajas,cbNumPuertasBajas,cbColorBajas,cajaPesoBajas,capacidadBajas);
+
+        } else if (componente == btnCancelarBajas) {
+            Object[] opciones = {"Sí", "No"};
+            int confirm = JOptionPane.showOptionDialog(
+                    this,"¿Seguro que quieres salir de esta ventana?","Confirmación",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,null, opciones, opciones[0]
+            );
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                //this.dispose();
+                this.setVisible(false);
+            }
+        }
+        }
 }

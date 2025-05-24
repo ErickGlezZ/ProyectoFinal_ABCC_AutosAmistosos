@@ -41,4 +41,11 @@ public class VehiculoDAO {
                 vehiculo.getCapacidadPersonas()
         );
     }
+
+    //===================BAJAS=====================
+    public boolean eliminarVehiculo(String numVehiculo){
+        String sql = "DELETE FROM Vehiculos WHERE Num_Vehiculo = ?";
+        return  conexionBD.ejecutarInstruccionLMD(sql,numVehiculo);
+
+    }
 }
