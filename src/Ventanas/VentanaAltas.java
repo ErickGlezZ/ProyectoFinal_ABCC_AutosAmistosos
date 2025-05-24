@@ -1,18 +1,32 @@
 package Ventanas;
 
+import Controlador.VehiculoDAO;
+import Modelo.ResultSetTableModel;
+import Modelo.Vehiculo;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.stream.StreamSupport;
 
-public class VentanaAltas extends JInternalFrame {
+import static java.util.Date.*;
+
+public class VentanaAltas extends JInternalFrame implements ActionListener {
 
     JButton btnAgregar, btnRestablecerAltas, btnCancelarAltas;
-    JTextField idVehiculoAltas, modeloAltas, pesoAltas;
-    JFormattedTextField precioListaAltas;
+    JTextField cajaNumVehiculoAltas, cajaModeloAltas, cajaPesoAltas, cajaPrecioListaAltas;
     JSpinner numCilindrosAltas, capacidadAltas;
-    JComboBox<Integer> numPuertasAltas, diaAltas, añoAltas;
-    JComboBox<String> paisFabAltas, mesAltas, colorAltas;
+    JComboBox<Integer> cbNumPuertasAltas, cbDiaAltas, cbAñoAltas;
+    JComboBox<String> cbPaisFabAltas, cbMesAltas, cbColorAltas;
     JTable tablaVehiculosAltas;
 
     ImageIcon logoIcon, inicioIcon, personalIcon, encargadoIcon, telefonoIcon, correoIcon, autoIcon, configIcon, registrosIcon;
@@ -20,6 +34,7 @@ public class VentanaAltas extends JInternalFrame {
     JButton btnInicio, btnRegistrosAltas;
 
 
+    VehiculoDAO vehiculoDAO = VehiculoDAO.getInstancia();
     public VentanaAltas() {
         super("ALTAS", true, true, false, true); // Título y propiedades del InternalFrame
         setLayout(null);
@@ -134,14 +149,14 @@ public class VentanaAltas extends JInternalFrame {
         JLabel txtIdVehiculoAltas = new JLabel("Numero Vehiculo:");
         agregarAInternal(txtIdVehiculoAltas,10,80,120,20);
 
-        idVehiculoAltas = new JTextField();
-        agregarAInternal(idVehiculoAltas,135, 83,150,25);
+        cajaNumVehiculoAltas = new JTextField();
+        agregarAInternal(cajaNumVehiculoAltas,135, 83,150,25);
 
         JLabel txtModeloAltas = new JLabel("Modelo:");
         agregarAInternal(txtModeloAltas,10,110,120,20);
 
-        modeloAltas = new JTextField();
-        agregarAInternal(modeloAltas,135,113,150,25);
+        cajaModeloAltas = new JTextField();
+        agregarAInternal(cajaModeloAltas,135,113,150,25);
 
         JLabel txtPaisFabAltas = new JLabel("Pais de Fabricacion");
         agregarAInternal(txtPaisFabAltas,10,150,120,20);
@@ -157,38 +172,38 @@ public class VentanaAltas extends JInternalFrame {
                 "Túnez", "Turquía", "Ucrania", "Uzbekistán", "Vietnam"
         };
 
-        paisFabAltas = new JComboBox<>(paisesFabricantesAltas);
-        paisFabAltas.setEditable(false);
-        agregarAInternal(paisFabAltas,135,148,120,25);
+        cbPaisFabAltas = new JComboBox<>(paisesFabricantesAltas);
+        cbPaisFabAltas.setEditable(false);
+        agregarAInternal(cbPaisFabAltas,135,148,120,25);
 
         JLabel txtFechaFabAltas = new JLabel("Fecha de Fabricación:");
         agregarAInternal(txtFechaFabAltas, 10, 180, 150, 20);
 
 
-        diaAltas = new JComboBox<>();
-        for (int d = 0; d <= 31; d++) diaAltas.addItem(d);
-        agregarAInternal(diaAltas, 160, 180, 50, 25);
+        cbDiaAltas = new JComboBox<>();
+        for (int d = 0; d <= 31; d++) cbDiaAltas.addItem(d);
+        agregarAInternal(cbDiaAltas, 160, 180, 50, 25);
 
         String[] mesesAltas = {
-                "Elije un mes..", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
         };
-        mesAltas = new JComboBox<>(mesesAltas);
-        agregarAInternal(mesAltas, 215, 180, 100, 25);
+        cbMesAltas = new JComboBox<>(mesesAltas);
+        agregarAInternal(cbMesAltas, 215, 180, 100, 25);
 
 
-        añoAltas = new JComboBox<>();
+        cbAñoAltas = new JComboBox<>();
         for (int a = 1900; a <= 2025; a++) {
-            añoAltas.addItem(a);
+            cbAñoAltas.addItem(a);
         }
-        agregarAInternal(añoAltas, 320, 180, 80, 25);
+        agregarAInternal(cbAñoAltas, 320, 180, 80, 25);
 
 
         JLabel txtPrecioListaAltas = new JLabel("Precio de Lista:");
         agregarAInternal(txtPrecioListaAltas, 10, 210, 120, 20);
 
-        precioListaAltas = new JFormattedTextField(NumberFormat.getNumberInstance());
-        agregarAInternal(precioListaAltas, 135, 213, 150, 25);
+        cajaPrecioListaAltas = new JTextField();
+        agregarAInternal(cajaPrecioListaAltas, 135, 213, 150, 25);
 
 
         JLabel txtCilindrosAltas = new JLabel("Cilindros:");
@@ -213,14 +228,14 @@ public class VentanaAltas extends JInternalFrame {
         JLabel txtPuertasAltas = new JLabel("Número de Puertas:");
         agregarAInternal(txtPuertasAltas, 10, 270, 120, 20);
 
-        numPuertasAltas = new JComboBox<>(new Integer[]{0, 2, 3, 4, 5});
-        agregarAInternal(numPuertasAltas, 160, 273, 50, 25);
+        cbNumPuertasAltas = new JComboBox<>(new Integer[]{0, 2, 3, 4, 5});
+        agregarAInternal(cbNumPuertasAltas, 160, 273, 50, 25);
 
         JLabel txtPesoAltas = new JLabel("Peso:");
         agregarAInternal(txtPesoAltas,10,330,80,20);
 
-        pesoAltas = new JTextField();
-        agregarAInternal(pesoAltas,135,333,150,25);
+        cajaPesoAltas = new JTextField();
+        agregarAInternal(cajaPesoAltas,135,333,150,25);
 
         JLabel txtColorAltas = new JLabel("Color:");
         agregarAInternal(txtColorAltas, 10, 300, 120, 20);
@@ -231,8 +246,8 @@ public class VentanaAltas extends JInternalFrame {
                 "Vino", "Azul Marino", "Gris Oxford"
         };
 
-        colorAltas = new JComboBox<>(coloresAutoAltas);
-        agregarAInternal(colorAltas, 135, 303, 120, 25);
+        cbColorAltas = new JComboBox<>(coloresAutoAltas);
+        agregarAInternal(cbColorAltas, 135, 303, 120, 25);
 
 
         String[] columnasAltas = {"Num_Vehiculo", "Modelo", "País", "Fecha Fab", "Precio", "Cilindros", "Capacidad", "Puertas", "Color"};
@@ -254,6 +269,7 @@ public class VentanaAltas extends JInternalFrame {
 
         btnAgregar = new JButton("Agregar");
         agregarAInternal(btnAgregar,490, 100,110,30);
+        btnAgregar.addActionListener(this);
 
         btnRestablecerAltas = new JButton("Restablecer");
         agregarAInternal(btnRestablecerAltas,490, 170,110,30);
@@ -278,5 +294,112 @@ public class VentanaAltas extends JInternalFrame {
     public void agregarAInternal(JComponent componente, int x, int y, int w, int h) {
         componente.setBounds(x, y, w, h);
         this.add(componente);
+    }
+
+    public void actualizarTabla(JTable tabla){
+        final String CONTROLADOR_JDBC = "com.mysql.cj.jdbc.Driver";
+        final String URL = "jdbc:mysql://localhost:3306/BD_Autos_Amistosos";
+        final String CONSULTA = "SELECT * FROM vehiculos";
+
+        try {
+            ResultSetTableModel modelo = new ResultSetTableModel(CONTROLADOR_JDBC, URL, CONSULTA);
+            tabla.setModel(modelo);
+
+            // Aquí pones el renderer para la columna de fecha
+            int columnaFecha = 3; // Cambia 3 por el índice real de la columna fecha en tu tabla
+            tabla.getColumnModel().getColumn(columnaFecha).setCellRenderer(new DefaultTableCellRenderer() {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                @Override
+                public void setValue(Object value) {
+                    if (value instanceof java.sql.Date) {
+                        LocalDate localDate = ((java.sql.Date) value).toLocalDate();
+                        setText(localDate.format(formatter));
+                    } else {
+                        super.setValue(value);
+                    }
+                }
+            });
+
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public int obtenerNumeroMes(String nombreMes) {
+        if (nombreMes.equalsIgnoreCase("Enero")) {
+            return 1;
+        } else if (nombreMes.equalsIgnoreCase("Febrero")) {
+            return 2;
+        } else if (nombreMes.equalsIgnoreCase("Marzo")) {
+            return 3;
+        } else if (nombreMes.equalsIgnoreCase("Abril")) {
+            return 4;
+        } else if (nombreMes.equalsIgnoreCase("Mayo")) {
+            return 5;
+        } else if (nombreMes.equalsIgnoreCase("Junio")) {
+            return 6;
+        } else if (nombreMes.equalsIgnoreCase("Julio")) {
+            return 7;
+        } else if (nombreMes.equalsIgnoreCase("Agosto")) {
+            return 8;
+        } else if (nombreMes.equalsIgnoreCase("Septiembre")) {
+            return 9;
+        } else if (nombreMes.equalsIgnoreCase("Octubre")) {
+            return 10;
+        } else if (nombreMes.equalsIgnoreCase("Noviembre")) {
+            return 11;
+        } else if (nombreMes.equalsIgnoreCase("Diciembre")) {
+            return 12;
+        } else {
+            return -1; // Valor inválido
+        }
+    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        Object componente = e.getSource();
+
+        if (componente == btnAgregar){
+
+            String dia = cbDiaAltas.getSelectedItem().toString();
+            String mes = cbMesAltas.getSelectedItem().toString();
+            String año = cbAñoAltas.getSelectedItem().toString();
+
+            int numMes = obtenerNumeroMes(mes);
+
+            LocalDate fecha = LocalDate.of(Integer.parseInt(año), numMes, Integer.parseInt(dia));
+            Date fechaSQL = java.sql.Date.valueOf(fecha);
+
+
+            Vehiculo v = new Vehiculo(
+                    cajaNumVehiculoAltas.getText(),
+                    cajaModeloAltas.getText(),
+                    cbPaisFabAltas.getSelectedItem().toString(),
+                    fechaSQL,
+                    cajaPrecioListaAltas.getText(),
+                    numCilindrosAltas.getValue().toString(),
+                    Byte.parseByte(cbNumPuertasAltas.getSelectedItem().toString()),
+                    cbColorAltas.getSelectedItem().toString(),
+                    cajaPesoAltas.getText(),
+                    capacidadAltas.getValue().toString());
+
+
+            if (vehiculoDAO.agregarVehiculo(v)){
+                JOptionPane.showMessageDialog(this,"Registro Agregado CORRECTAMENTE");
+                System.out.println("Registro Agregado CORRECTAMENTE");
+                System.out.println("ejecutando");
+
+
+                actualizarTabla(tablaVehiculosAltas);
+
+            } else{
+                JOptionPane.showMessageDialog(this,"Error en la insercion");
+                System.out.println("ERROR en la insercion");
+            }
+        }
     }
 }

@@ -71,7 +71,7 @@ public class ConexionBD {
         }
     }
 
-    // Método de prueba opcional
+
     public static void main(String[] args) {
         ConexionBD conexion = ConexionBD.getInstancia();
     }

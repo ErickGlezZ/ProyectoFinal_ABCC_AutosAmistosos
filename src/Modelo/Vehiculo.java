@@ -1,19 +1,21 @@
 package Modelo;
 
+import java.util.Date;
+
 public class Vehiculo {
 
     private String numVehiculo;
     private String modelo;
     private String paisFab;
-    private String fechaFab;
+    private Date fechaFab;
     private String precioLista;
-    private byte numCilindros;
+    private String numCilindros;
     private byte numPuertas;
     private String color;
     private String peso;
-    private byte capacidadPersonas;
+    private String capacidadPersonas;
 
-    public Vehiculo(String numVehiculo, String modelo, String paisFab, String fechaFab, String precioLista, byte numCilindros, byte numPuertas, String color, String peso, byte capacidadPersonas){
+    public Vehiculo(String numVehiculo, String modelo, String paisFab, Date fechaFab, String precioLista, String numCilindros, byte numPuertas, String color, String peso, String capacidadPersonas){
         this.numVehiculo = numVehiculo;
         this.modelo = modelo;
         this.paisFab = paisFab;
@@ -50,11 +52,11 @@ public class Vehiculo {
         this.paisFab = paisFab;
     }
 
-    public String getFechaFab() {
+    public Date getFechaFab() {
         return fechaFab;
     }
 
-    public void setFechaFab(String fechaFab) {
+    public void setFechaFab(Date fechaFab) {
         this.fechaFab = fechaFab;
     }
 
@@ -66,11 +68,11 @@ public class Vehiculo {
         this.precioLista = precioLista;
     }
 
-    public byte getNumCilindros() {
+    public String getNumCilindros() {
         return numCilindros;
     }
 
-    public void setNumCilindros(byte numCilindros) {
+    public void setNumCilindros(String numCilindros) {
         this.numCilindros = numCilindros;
     }
 
@@ -98,11 +100,11 @@ public class Vehiculo {
         this.peso = peso;
     }
 
-    public byte getCapacidadPersonas() {
+    public String getCapacidadPersonas() {
         return capacidadPersonas;
     }
 
-    public void setCapacidadPersonas(byte capacidadPersonas) {
+    public void setCapacidadPersonas(String capacidadPersonas) {
         this.capacidadPersonas = capacidadPersonas;
     }
 
