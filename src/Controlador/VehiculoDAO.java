@@ -105,15 +105,33 @@ public class VehiculoDAO {
                 vehiculo.getNumVehiculo());
     }
 
-    public ResultSetTableModel obtenerVehiculosFiltrados(String filtroSQL) {
+    //================CONSULTAS=====================
+
+    public ResultSetTableModel obtenerVehiculosFiltrados(String campo, Object valor) {
+        String consulta = "SELECT * FROM Vehiculos WHERE " + campo + " = ?";
+        try {
+
+            return new ResultSetTableModel(
+                    conexionBD.getDriver(),
+                    conexionBD.getURL(),
+                    consulta,
+                    valor
+            );
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException("Error al obtener vehiculos filtrados", e);
+        }
+    }
+
+    public ResultSetTableModel obtenerVehiculos() {
+        String consulta = "SELECT * FROM Vehiculos";
         try {
             return new ResultSetTableModel(
                     conexionBD.getDriver(),
                     conexionBD.getURL(),
-                    filtroSQL
+                    consulta
             );
         } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException("Error al obtener vehículos", e);
+            throw new RuntimeException("Error al obtener vehiculos", e);
         }
     }
 

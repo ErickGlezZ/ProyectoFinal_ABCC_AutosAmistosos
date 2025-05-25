@@ -1,11 +1,17 @@
 package Ventanas;
 
 import Controlador.VehiculoDAO;
+import Modelo.ResultSetTableModel;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
-public class VentanaConsultas extends JInternalFrame {
+public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
     JButton btnRegistrosConsultas, btnInicio, btnBuscarConsultas, btnRestablecerConsultas, btnCancelarConsultas, btnPrimerReg, btnAnteriorReg, btnSiguienteReg, btnUltimoReg;
     JTextField cajaModeloConsultas, cajaPesoConsultas, cajaFechaFabConsultas, cajaPrecioListaConsultas, cajaIndice;
@@ -131,15 +137,18 @@ public class VentanaConsultas extends JInternalFrame {
 
         rbTodos = new JRadioButton("TODOS.");
         agregarAInternal(rbTodos, 10,100,80,20);
+        rbTodos.addActionListener(this);
 
         rbModelo = new JRadioButton("MODELO:");
         agregarAInternal(rbModelo,100,100,80,20);
+        rbModelo.addActionListener(this);
 
         cajaModeloConsultas = new JTextField();
         agregarAInternal(cajaModeloConsultas,270,100,120,25);
 
         rbPaisFab = new JRadioButton("PAIS FABRICACION:");
         agregarAInternal(rbPaisFab,100,130,140,20);
+        rbPaisFab.addActionListener(this);
 
         String[] paisesFabricantesConsultas = {
                 "Elige un pais..", "Alemania", "Argentina", "Australia", "Austria", "Bélgica",
@@ -153,21 +162,25 @@ public class VentanaConsultas extends JInternalFrame {
         };
         cbPaisFabConsultas = new JComboBox<>(paisesFabricantesConsultas);
         agregarAInternal(cbPaisFabConsultas,270,130,120,25);
+        cbPaisFabConsultas.addActionListener(this);
 
         rbFechaFab = new JRadioButton("FECHA FABRICACION:");
         agregarAInternal(rbFechaFab,100,160,150,20);
+        rbFechaFab.addActionListener(this);
 
         cajaFechaFabConsultas = new JTextField();
         agregarAInternal(cajaFechaFabConsultas,270,160,120,25);
 
         rbPrecioLista = new JRadioButton("PRECIO LISTA:");
         agregarAInternal(rbPrecioLista,100,190,120,20);
+        rbPrecioLista.addActionListener(this);
 
         cajaPrecioListaConsultas = new JTextField();
         agregarAInternal(cajaPrecioListaConsultas,270,190,120,25);
 
         rbCilindros = new JRadioButton("CILINDROS:");
         agregarAInternal(rbCilindros,100,220,100,20);
+        rbCilindros.addActionListener(this);
 
         String cilindrosConsultas[] = {"0", "3", "4", "5", "6", "8", "10", "12", "16"};
         SpinnerListModel modeloCilConsultas = new SpinnerListModel(cilindrosConsultas);
@@ -176,12 +189,15 @@ public class VentanaConsultas extends JInternalFrame {
 
         rbNumPuertas = new JRadioButton("NUMERO PUERTAS:");
         agregarAInternal(rbNumPuertas,100,250,140,20);
+        rbNumPuertas.addActionListener(this);
 
         cbNumPuertasConsultas = new JComboBox<>(new Integer[]{0, 2, 3, 4, 5});
         agregarAInternal(cbNumPuertasConsultas,270,250,50,25);
+        cbNumPuertasConsultas.addActionListener(this);
 
         rbColor = new JRadioButton("COLOR:");
         agregarAInternal(rbColor,100,280,100,20);
+        rbColor.addActionListener(this);
 
         String[] coloresAutoConsultas = {
                 "Elige color..", "Negro", "Blanco", "Gris", "Plateado", "Rojo", "Azul",
@@ -190,15 +206,18 @@ public class VentanaConsultas extends JInternalFrame {
         };
         cbColorConsultas = new JComboBox<>(coloresAutoConsultas);
         agregarAInternal(cbColorConsultas,270,280,120,25);
+        cbColorConsultas.addActionListener(this);
 
         rbPeso = new JRadioButton("PESO:");
         agregarAInternal(rbPeso,100,310,80,20);
+        rbPeso.addActionListener(this);
 
         cajaPesoConsultas = new JTextField();
         agregarAInternal(cajaPesoConsultas,270,310,120,25);
 
         rbCapacidad = new JRadioButton("CAPACIDAD PERSONAS:");
         agregarAInternal(rbCapacidad,100,340,170,20);
+        rbCapacidad.addActionListener(this);
 
         String capacidadesConsultas[] = {"0", "2", "4", "5", "7", "8", "12", "15"};
         SpinnerListModel modeloCapConsultas = new SpinnerListModel(capacidadesConsultas);
@@ -235,12 +254,15 @@ public class VentanaConsultas extends JInternalFrame {
 
         btnBuscarConsultas = new JButton("Buscar");
         agregarAInternal(btnBuscarConsultas,490, 100,110,30);
+        btnBuscarConsultas.addActionListener(this);
 
         btnRestablecerConsultas = new JButton("Restablecer");
         agregarAInternal(btnRestablecerConsultas,490, 170,110,30);
+        btnRestablecerConsultas.addActionListener(this);
 
         btnCancelarConsultas = new JButton("Cancelar");
         agregarAInternal(btnCancelarConsultas,490,240,110,30);
+        btnCancelarConsultas.addActionListener(this);
 
         //Barra Busqueda
         btnPrimerReg = new JButton();
@@ -281,7 +303,22 @@ public class VentanaConsultas extends JInternalFrame {
         this.add(componente);
     }
 
+    public void limpiarVentana() {
 
+        
+        cajaModeloConsultas.setText("");
+        cajaPesoConsultas.setText("");
+        cajaPrecioListaConsultas.setText("");
+        numCilindrosConsultas.setValue("0");
+        capacidadConsultas.setValue("0");
+        cbNumPuertasConsultas.setSelectedIndex(0);
+        cbDiaConsultas.setSelectedIndex(0);
+        cbAñoConsultas.setSelectedIndex(0);
+        cbPaisFabConsultas.setSelectedIndex(0);
+        cbMesConsultas.setSelectedIndex(0);
+        cbColorConsultas.setSelectedIndex(0);
+
+    }
 
 
 
@@ -295,8 +332,95 @@ public class VentanaConsultas extends JInternalFrame {
 
 
     public void actualizarTablaFiltro(JTable tabla){
+        ResultSetTableModel modelo;
 
+        try {
+            if (rbModelo.isSelected()){
+                modelo = vehiculoDAO.obtenerVehiculosFiltrados("Modelo", cajaModeloConsultas.getText());
+            } else if (rbPaisFab.isSelected()) {
+                modelo = vehiculoDAO.obtenerVehiculosFiltrados("Pais_Fab", cbPaisFabConsultas.getSelectedItem().toString());
+            } else if (rbFechaFab.isSelected()) {
+                modelo = vehiculoDAO.obtenerVehiculosFiltrados("Fecha_Fab", cajaFechaFabConsultas.getText());
+            } else if (rbPrecioLista.isSelected()) {
+                modelo = vehiculoDAO.obtenerVehiculosFiltrados("Precio_Lista", cajaPrecioListaConsultas.getText());
+            } else if (rbCilindros.isSelected()) {
+                modelo = vehiculoDAO.obtenerVehiculosFiltrados("Num_Cilindros", numCilindrosConsultas.getValue().toString());
+            } else if (rbNumPuertas.isSelected()) {
+                modelo = vehiculoDAO.obtenerVehiculosFiltrados("Num_Puertas", cbNumPuertasConsultas.getSelectedItem().toString());
+            } else if (rbColor.isSelected()) {
+                modelo = vehiculoDAO.obtenerVehiculosFiltrados("Color", cbColorConsultas.getSelectedItem().toString());
+            } else if (rbPeso.isSelected()) {
+                modelo = vehiculoDAO.obtenerVehiculosFiltrados("Peso", cajaPesoConsultas.getText());
+            } else if (rbCapacidad.isSelected()) {
+                modelo = vehiculoDAO.obtenerVehiculosFiltrados("Cap_Personas", capacidadConsultas.getValue().toString());
+            } else {
+                modelo = vehiculoDAO.obtenerVehiculos();
+            }
+            tabla.setModel(modelo);
+
+            int columnaFecha = 3;
+            tabla.getColumnModel().getColumn(columnaFecha).setCellRenderer(new DefaultTableCellRenderer() {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                @Override
+                public void setValue(Object value) {
+                    if (value instanceof java.sql.Date) {
+                        LocalDate localDate = ((java.sql.Date) value).toLocalDate();
+                        setText(localDate.format(formatter));
+                    } else {
+                        super.setValue(value);
+                    }
+                }
+            });
+
+        } catch (RuntimeException e) {
+            JOptionPane.showMessageDialog(null, "Error al filtrar vehiculos: " + e.getMessage());
+        }
 
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        Object componente = e.getSource();
+
+        if (componente == btnBuscarConsultas){
+            actualizarTablaFiltro(tablaVehiculosConsultas);
+
+        } else if (componente == btnRestablecerConsultas) {
+            limpiarVentana();
+        } else if (componente == btnCancelarConsultas) {
+            
+        } else if (componente == rbTodos) {
+
+            actualizarTablaFiltro(tablaVehiculosConsultas);
+        } else if (componente == rbModelo) {
+
+            actualizarTablaFiltro(tablaVehiculosConsultas);
+        } else if (componente == rbPaisFab) {
+
+            actualizarTablaFiltro(tablaVehiculosConsultas);
+        } else if (componente == rbFechaFab) {
+
+            actualizarTablaFiltro(tablaVehiculosConsultas);
+        } else if (componente == rbPrecioLista) {
+
+            actualizarTablaFiltro(tablaVehiculosConsultas);
+        } else if (componente == rbCilindros) {
+
+            actualizarTablaFiltro(tablaVehiculosConsultas);
+        } else if (componente == rbNumPuertas) {
+
+            actualizarTablaFiltro(tablaVehiculosConsultas);
+        } else if (componente == rbColor) {
+
+            actualizarTablaFiltro(tablaVehiculosConsultas);
+        } else if (componente == rbPeso) {
+
+            actualizarTablaFiltro(tablaVehiculosConsultas);
+        } else if (componente == rbCapacidad) {
+
+             actualizarTablaFiltro(tablaVehiculosConsultas);
+        }
+    }
 }

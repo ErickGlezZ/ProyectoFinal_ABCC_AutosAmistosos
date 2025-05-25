@@ -42,6 +42,16 @@ public class ResultSetTableModel extends AbstractTableModel {
         establecerConsulta( consulta );
     }
 
+
+    public ResultSetTableModel(String controlador, String url, String consulta, Object... params)
+            throws SQLException, ClassNotFoundException {
+        Class.forName(controlador);
+        conexion = DriverManager.getConnection(url,"root","itsj");
+        conectadoALaBaseDeDatos = true;
+        establecerConsultaConParametros(consulta, params);
+    }
+
+
     // obtener la clase que representa al tipo de columna
     public Class getColumnClass( int columna ) throws IllegalStateException
     {
@@ -163,6 +173,39 @@ public class ResultSetTableModel extends AbstractTableModel {
         // notificar al objeto JTable que el modelo ha cambiado
         fireTableStructureChanged();
     }
+
+    public void establecerConsultaConParametros(String consulta, Object... params)
+            throws SQLException, IllegalStateException {
+        if (!conectadoALaBaseDeDatos)
+            throw new IllegalStateException("No hay conexion a la base de datos");
+
+        if (conjuntoResultados != null) {
+            conjuntoResultados.close();
+        }
+        if (instruccion != null) {
+            instruccion.close();
+        }
+
+        PreparedStatement ps = conexion.prepareStatement(consulta,
+                ResultSet.TYPE_SCROLL_INSENSITIVE,
+                ResultSet.CONCUR_READ_ONLY);
+
+        for (int i = 0; i < params.length; i++) {
+            ps.setObject(i + 1, params[i]);
+        }
+
+        conjuntoResultados = ps.executeQuery();
+        metaDatos = conjuntoResultados.getMetaData();
+
+        conjuntoResultados.last();
+        numeroDeFilas = conjuntoResultados.getRow();
+        conjuntoResultados.beforeFirst();
+
+        fireTableStructureChanged();
+
+        instruccion = ps;
+    }
+
 
     // cerrar objetos Statement y Connection
     public void desconectarDeLaBaseDeDatos()
