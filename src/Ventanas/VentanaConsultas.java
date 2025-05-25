@@ -10,14 +10,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
     JButton btnRegistrosConsultas, btnInicio, btnBuscarConsultas, btnRestablecerConsultas, btnCancelarConsultas, btnPrimerReg, btnAnteriorReg, btnSiguienteReg, btnUltimoReg;
     JTextField cajaModeloConsultas, cajaPesoConsultas, cajaFechaFabConsultas, cajaPrecioListaConsultas, cajaIndice;
     JSpinner numCilindrosConsultas, capacidadConsultas;
-    JComboBox<Integer> cbNumPuertasConsultas, cbDiaConsultas, cbAñoConsultas;
-    JComboBox<String> cbPaisFabConsultas, cbMesConsultas, cbColorConsultas;
+    JComboBox<Integer> cbNumPuertasConsultas;
+    JComboBox<String> cbPaisFabConsultas, cbColorConsultas;
     JTable  tablaVehiculosConsultas;
     ButtonGroup rbGroup;
     JRadioButton rbTodos, rbModelo, rbPaisFab, rbFechaFab, rbPrecioLista, rbCilindros, rbNumPuertas, rbColor, rbPeso, rbCapacidad;
@@ -305,17 +306,15 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
     public void limpiarVentana() {
 
-        
         cajaModeloConsultas.setText("");
         cajaPesoConsultas.setText("");
         cajaPrecioListaConsultas.setText("");
         numCilindrosConsultas.setValue("0");
         capacidadConsultas.setValue("0");
         cbNumPuertasConsultas.setSelectedIndex(0);
-        cbDiaConsultas.setSelectedIndex(0);
-        cbAñoConsultas.setSelectedIndex(0);
+
         cbPaisFabConsultas.setSelectedIndex(0);
-        cbMesConsultas.setSelectedIndex(0);
+
         cbColorConsultas.setSelectedIndex(0);
 
     }
@@ -340,7 +339,22 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             } else if (rbPaisFab.isSelected()) {
                 modelo = vehiculoDAO.obtenerVehiculosFiltrados("Pais_Fab", cbPaisFabConsultas.getSelectedItem().toString());
             } else if (rbFechaFab.isSelected()) {
-                modelo = vehiculoDAO.obtenerVehiculosFiltrados("Fecha_Fab", cajaFechaFabConsultas.getText());
+
+                if (cajaFechaFabConsultas.getText().isEmpty()){
+                    JOptionPane.showMessageDialog(null,"Ingresa una fecha en el campo");
+                    return;
+                }
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                try {
+                    LocalDate localDate = LocalDate.parse(cajaFechaFabConsultas.getText(), formatter);
+                    java.sql.Date fechaSQL = java.sql.Date.valueOf(localDate);
+
+                    modelo = vehiculoDAO.obtenerVehiculosFiltrados("Fecha_Fab", fechaSQL);
+                } catch (DateTimeParseException e) {
+                    JOptionPane.showMessageDialog(null, "La fecha ingresada no tiene el formato correcto (dd/MM/yyyy).");
+                    return;
+                }
+
             } else if (rbPrecioLista.isSelected()) {
                 modelo = vehiculoDAO.obtenerVehiculosFiltrados("Precio_Lista", cajaPrecioListaConsultas.getText());
             } else if (rbCilindros.isSelected()) {
@@ -375,6 +389,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         } catch (RuntimeException e) {
             JOptionPane.showMessageDialog(null, "Error al filtrar vehiculos: " + e.getMessage());
+            e.printStackTrace();
         }
 
     }
