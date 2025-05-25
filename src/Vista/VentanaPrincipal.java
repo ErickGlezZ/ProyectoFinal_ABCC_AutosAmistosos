@@ -165,7 +165,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
 
             }
         } else if (componente == itemConsultas || componente == btnToolConsultar){
-
+            IF_Consultas.limpiarVentana();
             IF_Consultas.refrescarTabla();
             if (!IF_Consultas.isVisible()) {
                 IF_Consultas.setVisible(true);

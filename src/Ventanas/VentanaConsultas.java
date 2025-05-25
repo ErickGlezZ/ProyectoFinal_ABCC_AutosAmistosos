@@ -1,16 +1,22 @@
 package Ventanas;
 
+import ConexionBD.ConexionBD;
 import Controlador.VehiculoDAO;
 import Modelo.ResultSetTableModel;
+import Modelo.Vehiculo;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
@@ -139,6 +145,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
         rbTodos = new JRadioButton("TODOS.");
         agregarAInternal(rbTodos, 10,100,80,20);
         rbTodos.addActionListener(this);
+        rbTodos.setSelected(true);
 
         rbModelo = new JRadioButton("MODELO:");
         agregarAInternal(rbModelo,100,100,80,20);
@@ -146,6 +153,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         cajaModeloConsultas = new JTextField();
         agregarAInternal(cajaModeloConsultas,270,100,120,25);
+        cajaModeloConsultas.setEnabled(false);
 
         rbPaisFab = new JRadioButton("PAIS FABRICACION:");
         agregarAInternal(rbPaisFab,100,130,140,20);
@@ -164,6 +172,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
         cbPaisFabConsultas = new JComboBox<>(paisesFabricantesConsultas);
         agregarAInternal(cbPaisFabConsultas,270,130,120,25);
         cbPaisFabConsultas.addActionListener(this);
+        cbPaisFabConsultas.setEnabled(false);
 
         rbFechaFab = new JRadioButton("FECHA FABRICACION:");
         agregarAInternal(rbFechaFab,100,160,150,20);
@@ -171,6 +180,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         cajaFechaFabConsultas = new JTextField();
         agregarAInternal(cajaFechaFabConsultas,270,160,120,25);
+        cajaFechaFabConsultas.setEnabled(false);
 
         rbPrecioLista = new JRadioButton("PRECIO LISTA:");
         agregarAInternal(rbPrecioLista,100,190,120,20);
@@ -178,6 +188,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         cajaPrecioListaConsultas = new JTextField();
         agregarAInternal(cajaPrecioListaConsultas,270,190,120,25);
+        cajaPrecioListaConsultas.setEnabled(false);
 
         rbCilindros = new JRadioButton("CILINDROS:");
         agregarAInternal(rbCilindros,100,220,100,20);
@@ -187,6 +198,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
         SpinnerListModel modeloCilConsultas = new SpinnerListModel(cilindrosConsultas);
         numCilindrosConsultas = new JSpinner(modeloCilConsultas);
         agregarAInternal(numCilindrosConsultas,270,220,50,25);
+        numCilindrosConsultas.setEnabled(false);
 
         rbNumPuertas = new JRadioButton("NUMERO PUERTAS:");
         agregarAInternal(rbNumPuertas,100,250,140,20);
@@ -195,6 +207,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
         cbNumPuertasConsultas = new JComboBox<>(new Integer[]{0, 2, 3, 4, 5});
         agregarAInternal(cbNumPuertasConsultas,270,250,50,25);
         cbNumPuertasConsultas.addActionListener(this);
+        cbNumPuertasConsultas.setEnabled(false);
 
         rbColor = new JRadioButton("COLOR:");
         agregarAInternal(rbColor,100,280,100,20);
@@ -208,6 +221,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
         cbColorConsultas = new JComboBox<>(coloresAutoConsultas);
         agregarAInternal(cbColorConsultas,270,280,120,25);
         cbColorConsultas.addActionListener(this);
+        cbColorConsultas.setEnabled(false);
 
         rbPeso = new JRadioButton("PESO:");
         agregarAInternal(rbPeso,100,310,80,20);
@@ -215,6 +229,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         cajaPesoConsultas = new JTextField();
         agregarAInternal(cajaPesoConsultas,270,310,120,25);
+        cajaPesoConsultas.setEnabled(false);
 
         rbCapacidad = new JRadioButton("CAPACIDAD PERSONAS:");
         agregarAInternal(rbCapacidad,100,340,170,20);
@@ -224,6 +239,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
         SpinnerListModel modeloCapConsultas = new SpinnerListModel(capacidadesConsultas);
         capacidadConsultas = new JSpinner(modeloCapConsultas);
         agregarAInternal(capacidadConsultas,270,340,50,25);
+        capacidadConsultas.setEnabled(false);
 
         rbGroup = new ButtonGroup();
         rbGroup.add(rbTodos);
@@ -269,27 +285,35 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
         btnPrimerReg = new JButton();
         btnPrimerReg.setIcon(new ImageIcon(new ImageIcon("./img/doble_flecha_izq.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
         agregarAInternal(btnPrimerReg,240,68,30,25);
+        btnPrimerReg.addActionListener(this);
 
 
         btnAnteriorReg = new JButton();
         btnAnteriorReg.setIcon(new ImageIcon(new ImageIcon("./img/flecha_izq.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
         agregarAInternal(btnAnteriorReg,280,68,30,25);
+        btnAnteriorReg.addActionListener(this);
 
 
         cajaIndice = new JTextField("0");
         cajaIndice.setFont(new Font("Arial", Font.BOLD, 18));
         agregarAInternal(cajaIndice,320,68,40,25);
+        cajaIndice.setEnabled(false);
 
 
         btnSiguienteReg = new JButton();
         btnSiguienteReg.setIcon(new ImageIcon(new ImageIcon("./img/flecha_der.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
         agregarAInternal(btnSiguienteReg,370,68,30,25);
+        btnSiguienteReg.addActionListener(this);
 
 
         btnUltimoReg = new JButton();
         btnUltimoReg.setIcon(new ImageIcon(new ImageIcon("./img/doble_flecha_der.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
         agregarAInternal(btnUltimoReg,410,68,30,25);
+        btnUltimoReg.addActionListener(this);
 
+
+        listaVehiculos = añadirVehiculos();
+        actualizarEstadoBotones();
         add(panelConsultas);
         add(panelDerechoConsultas);
     }
@@ -312,10 +336,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
         numCilindrosConsultas.setValue("0");
         capacidadConsultas.setValue("0");
         cbNumPuertasConsultas.setSelectedIndex(0);
-
         cbPaisFabConsultas.setSelectedIndex(0);
-
         cbColorConsultas.setSelectedIndex(0);
+        rbGroup.clearSelection();
+
 
     }
 
@@ -394,6 +418,109 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
     }
 
+    ArrayList<Vehiculo> listaVehiculos =  new ArrayList<>();
+    int posActual = -1;
+
+    public ArrayList<Vehiculo> añadirVehiculos() {
+        listaVehiculos.clear();
+
+        String sql = "SELECT * FROM Vehiculos";
+        ResultSet rs = null;
+
+        try {
+            rs = ConexionBD.getInstancia().ejecutarConsultaSQL(sql);
+
+            if (rs != null && rs.next()) {
+                do {
+                    String nv = rs.getString(1);
+                    String mc = rs.getString(2);
+                    String pf = rs.getString(3);
+                    Date fechaSql = rs.getDate("Fecha_Fab");
+                    String pl = rs.getString(5);
+                    String nc = rs.getString(6);
+                    Byte np = rs.getByte(7);
+                    String cc = rs.getString(8);
+                    String pc = rs.getString(9);
+                    String cap = rs.getString(10);
+
+                    Vehiculo v = new Vehiculo(nv, mc, pf, fechaSql, pl, nc, np, cc, pc, cap);
+                    listaVehiculos.add(v);
+                } while (rs.next());
+
+            } else {
+                JOptionPane.showMessageDialog(this, "No se encontraron registros de Vehiculo");
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al cargar los alumnos: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return listaVehiculos;
+    }
+
+    public void mostrarRegistros(int indice) {
+        if (indice >= 0 && indice < listaVehiculos.size()) {
+            Vehiculo reg = listaVehiculos.get(indice);
+
+
+
+            cajaModeloConsultas.setText(reg.getModelo());
+            cbPaisFabConsultas.setSelectedItem(reg.getPaisFab());
+
+            java.util.Date fecha = reg.getFechaFab();
+            if (fecha != null) {
+                java.sql.Date fechaSql = new java.sql.Date(fecha.getTime());
+                LocalDate localDate = fechaSql.toLocalDate();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                cajaFechaFabConsultas.setText(localDate.format(formatter));
+            } else {
+                cajaFechaFabConsultas.setText("");
+            }
+
+
+            cajaPrecioListaConsultas.setText(reg.getPrecioLista());
+            numCilindrosConsultas.setValue(reg.getNumCilindros());
+            cbNumPuertasConsultas.setSelectedItem((int) reg.getNumPuertas());
+            cbColorConsultas.setSelectedItem(reg.getColor());
+            cajaPesoConsultas.setText(reg.getPeso());
+            capacidadConsultas.setValue(reg.getCapacidadPersonas());
+
+            cajaIndice.setText(String.valueOf(indice + 1));
+            posActual = indice;
+
+            actualizarEstadoBotones();
+        }
+    }
+
+
+
+
+
+
+
+
+
+    public void actualizarEstadoBotones() {
+
+        if (posActual != 0 || listaVehiculos.isEmpty()){
+            btnPrimerReg.setEnabled(true);
+        }else {
+            btnPrimerReg.setEnabled(false);
+        }
+        //btnPrimerReg.setEnabled(posActual > 0 || listaVehiculos.isEmpty());
+        btnAnteriorReg.setEnabled(posActual > 0);
+        btnSiguienteReg.setEnabled(posActual < listaVehiculos.size() - 1);
+        btnUltimoReg.setEnabled(posActual < listaVehiculos.size() - 1);
+    }
+
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -403,39 +530,160 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             actualizarTablaFiltro(tablaVehiculosConsultas);
 
         } else if (componente == btnRestablecerConsultas) {
+            if (cajaIndice.getText().equals("0")){
+                JOptionPane.showMessageDialog(this,"No hay datos para borrar");
+            }
+            cajaIndice.setText("0");
+            posActual = -1;
+            actualizarEstadoBotones();
             limpiarVentana();
+            
         } else if (componente == btnCancelarConsultas) {
+
+            Object[] opciones = {"Sí", "No"};
+            int confirm = JOptionPane.showOptionDialog(
+                    this,"¿Seguro que quieres salir de esta ventana?","Confirmación",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,null, opciones, opciones[0]
+            );
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                //this.dispose();
+                this.setVisible(false);
+            }
             
         } else if (componente == rbTodos) {
+            cajaModeloConsultas.setEnabled(false);
+            cbPaisFabConsultas.setEnabled(false);
+            cajaFechaFabConsultas.setEnabled(false);
+            cajaPrecioListaConsultas.setEnabled(false);
+            numCilindrosConsultas.setEnabled(false);
+            cbNumPuertasConsultas.setEnabled(false);
+            cbColorConsultas.setEnabled(false);
+            cajaPesoConsultas.setEnabled(false);
+            capacidadConsultas.setEnabled(false);
 
             actualizarTablaFiltro(tablaVehiculosConsultas);
         } else if (componente == rbModelo) {
-
+            cajaModeloConsultas.setEnabled(true);
+            cbPaisFabConsultas.setEnabled(false);
+            cajaFechaFabConsultas.setEnabled(false);
+            cajaPrecioListaConsultas.setEnabled(false);
+            numCilindrosConsultas.setEnabled(false);
+            cbNumPuertasConsultas.setEnabled(false);
+            cbColorConsultas.setEnabled(false);
+            cajaPesoConsultas.setEnabled(false);
+            capacidadConsultas.setEnabled(false);
             actualizarTablaFiltro(tablaVehiculosConsultas);
         } else if (componente == rbPaisFab) {
-
+            cajaModeloConsultas.setEnabled(false);
+            cbPaisFabConsultas.setEnabled(true);
+            cajaFechaFabConsultas.setEnabled(false);
+            cajaPrecioListaConsultas.setEnabled(false);
+            numCilindrosConsultas.setEnabled(false);
+            cbNumPuertasConsultas.setEnabled(false);
+            cbColorConsultas.setEnabled(false);
+            cajaPesoConsultas.setEnabled(false);
+            capacidadConsultas.setEnabled(false);
             actualizarTablaFiltro(tablaVehiculosConsultas);
         } else if (componente == rbFechaFab) {
-
+            cajaModeloConsultas.setEnabled(false);
+            cbPaisFabConsultas.setEnabled(false);
+            cajaFechaFabConsultas.setEnabled(true);
+            cajaPrecioListaConsultas.setEnabled(false);
+            numCilindrosConsultas.setEnabled(false);
+            cbNumPuertasConsultas.setEnabled(false);
+            cbColorConsultas.setEnabled(false);
+            cajaPesoConsultas.setEnabled(false);
+            capacidadConsultas.setEnabled(false);
             actualizarTablaFiltro(tablaVehiculosConsultas);
         } else if (componente == rbPrecioLista) {
-
+            cajaModeloConsultas.setEnabled(false);
+            cbPaisFabConsultas.setEnabled(false);
+            cajaFechaFabConsultas.setEnabled(false);
+            cajaPrecioListaConsultas.setEnabled(true);
+            numCilindrosConsultas.setEnabled(false);
+            cbNumPuertasConsultas.setEnabled(false);
+            cbColorConsultas.setEnabled(false);
+            cajaPesoConsultas.setEnabled(false);
+            capacidadConsultas.setEnabled(false);
             actualizarTablaFiltro(tablaVehiculosConsultas);
         } else if (componente == rbCilindros) {
-
+            cajaModeloConsultas.setEnabled(false);
+            cbPaisFabConsultas.setEnabled(false);
+            cajaFechaFabConsultas.setEnabled(false);
+            cajaPrecioListaConsultas.setEnabled(false);
+            numCilindrosConsultas.setEnabled(true);
+            cbNumPuertasConsultas.setEnabled(false);
+            cbColorConsultas.setEnabled(false);
+            cajaPesoConsultas.setEnabled(false);
+            capacidadConsultas.setEnabled(false);
             actualizarTablaFiltro(tablaVehiculosConsultas);
         } else if (componente == rbNumPuertas) {
-
+            cajaModeloConsultas.setEnabled(false);
+            cbPaisFabConsultas.setEnabled(false);
+            cajaFechaFabConsultas.setEnabled(false);
+            cajaPrecioListaConsultas.setEnabled(false);
+            numCilindrosConsultas.setEnabled(false);
+            cbNumPuertasConsultas.setEnabled(true);
+            cbColorConsultas.setEnabled(false);
+            cajaPesoConsultas.setEnabled(false);
+            capacidadConsultas.setEnabled(false);
             actualizarTablaFiltro(tablaVehiculosConsultas);
         } else if (componente == rbColor) {
-
+            cajaModeloConsultas.setEnabled(false);
+            cbPaisFabConsultas.setEnabled(false);
+            cajaFechaFabConsultas.setEnabled(false);
+            cajaPrecioListaConsultas.setEnabled(false);
+            numCilindrosConsultas.setEnabled(false);
+            cbNumPuertasConsultas.setEnabled(false);
+            cbColorConsultas.setEnabled(true);
+            cajaPesoConsultas.setEnabled(false);
+            capacidadConsultas.setEnabled(false);
             actualizarTablaFiltro(tablaVehiculosConsultas);
         } else if (componente == rbPeso) {
-
+            cajaModeloConsultas.setEnabled(false);
+            cbPaisFabConsultas.setEnabled(false);
+            cajaFechaFabConsultas.setEnabled(false);
+            cajaPrecioListaConsultas.setEnabled(false);
+            numCilindrosConsultas.setEnabled(false);
+            cbNumPuertasConsultas.setEnabled(false);
+            cbColorConsultas.setEnabled(false);
+            cajaPesoConsultas.setEnabled(true);
+            capacidadConsultas.setEnabled(false);
             actualizarTablaFiltro(tablaVehiculosConsultas);
         } else if (componente == rbCapacidad) {
-
+            cajaModeloConsultas.setEnabled(false);
+            cbPaisFabConsultas.setEnabled(false);
+            cajaFechaFabConsultas.setEnabled(false);
+            cajaPrecioListaConsultas.setEnabled(false);
+            numCilindrosConsultas.setEnabled(false);
+            cbNumPuertasConsultas.setEnabled(false);
+            cbColorConsultas.setEnabled(false);
+            cajaPesoConsultas.setEnabled(false);
+            capacidadConsultas.setEnabled(true);
              actualizarTablaFiltro(tablaVehiculosConsultas);
+        } else if (componente == btnPrimerReg) {
+            System.out.println("Primer registro");
+            if (!listaVehiculos.isEmpty()) {
+                mostrarRegistros(0);
+
+            }
+        } else if (componente == btnAnteriorReg) {
+            System.out.println("anterior registro");
+            if (posActual > 0) {
+                mostrarRegistros(posActual - 1);
+            }
+        } else if (componente == btnSiguienteReg) {
+            System.out.println("Seg registro");
+            if (posActual < listaVehiculos.size() - 1) {
+                mostrarRegistros(posActual + 1);
+            }
+        } else if (componente == btnUltimoReg) {
+            System.out.println("Ult registro");
+            if (!listaVehiculos.isEmpty()) {
+                mostrarRegistros(listaVehiculos.size() - 1);
+            }
         }
     }
 }
