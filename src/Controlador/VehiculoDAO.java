@@ -1,7 +1,14 @@
 package Controlador;
 
 import ConexionBD.ConexionBD;
+import Modelo.ResultSetTableModel;
 import Modelo.Vehiculo;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class VehiculoDAO {
 
@@ -21,6 +28,38 @@ public class VehiculoDAO {
             instancia = new VehiculoDAO();
         }
         return instancia;
+    }
+
+
+    public void actualizarTabla(JTable tabla){
+        final String CONTROLADOR_JDBC = "com.mysql.cj.jdbc.Driver";
+        final String URL = "jdbc:mysql://localhost:3306/BD_Autos_Amistosos";
+        final String CONSULTA = "SELECT * FROM vehiculos";
+
+        try {
+            ResultSetTableModel modelo = new ResultSetTableModel(CONTROLADOR_JDBC, URL, CONSULTA);
+            tabla.setModel(modelo);
+
+
+            int columnaFecha = 3;
+            tabla.getColumnModel().getColumn(columnaFecha).setCellRenderer(new DefaultTableCellRenderer() {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                @Override
+                public void setValue(Object value) {
+                    if (value instanceof java.sql.Date) {
+                        LocalDate localDate = ((java.sql.Date) value).toLocalDate();
+                        setText(localDate.format(formatter));
+                    } else {
+                        super.setValue(value);
+                    }
+                }
+            });
+
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     //================ALTAS==================
@@ -65,4 +104,18 @@ public class VehiculoDAO {
                 vehiculo.getCapacidadPersonas(),
                 vehiculo.getNumVehiculo());
     }
+
+    public ResultSetTableModel obtenerVehiculosFiltrados(String filtroSQL) {
+        try {
+            return new ResultSetTableModel(
+                    conexionBD.getDriver(),
+                    conexionBD.getURL(),
+                    filtroSQL
+            );
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException("Error al obtener vehículos", e);
+        }
+    }
+
+
 }

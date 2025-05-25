@@ -115,6 +115,8 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     }
 
 
+
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -137,24 +139,38 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
 
 
         if (componente == itemAltas || componente == btnToolAgregar) {
+            IF_Altas.limpiarVentana();
+            IF_Altas.refrescarTabla();
             if (!IF_Altas.isVisible()) {
                 IF_Altas.setVisible(true);
                 IF_Altas.toFront();
+
             }
         } else if (componente == itemBajas || componente == btnToolEliminar){
+            IF_Bajas.limpiarVentana();
+            IF_Bajas.refrescarTabla();
+            this.revalidate();
+            this.repaint();
             if (!IF_Bajas.isVisible()) {
                 IF_Bajas.setVisible(true);
                 IF_Bajas.toFront();
+
             }
         } else if (componente == itemCambios || componente == btnToolCambiar){
+            IF_Cambios.limpiarVentana();
+            IF_Cambios.refrescarTabla();
             if (!IF_Cambios.isVisible()) {
                 IF_Cambios.setVisible(true);
                 IF_Cambios.toFront();
+
             }
         } else if (componente == itemConsultas || componente == btnToolConsultar){
+
+            IF_Consultas.refrescarTabla();
             if (!IF_Consultas.isVisible()) {
                 IF_Consultas.setVisible(true);
                 IF_Consultas.toFront();
+
             }
         }
 

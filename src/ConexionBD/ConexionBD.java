@@ -42,6 +42,15 @@ public class ConexionBD {
         return conexion;
     }
 
+    public String getURL() {
+        return "jdbc:mysql://localhost:3306/BD_Autos_Amistosos";
+    }
+
+    public String getDriver() {
+        return "com.mysql.cj.jdbc.Driver";
+    }
+
+
     // Método para ejecutar instrucciones LMD (INSERT, UPDATE, DELETE) con PreparedStatement
     public boolean ejecutarInstruccionLMD(String sql, Object... datos) {
         try (PreparedStatement pstmt = conexion.prepareStatement(sql)) {

@@ -299,7 +299,7 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
         capacidadBajas.setEnabled(false);
 
 
-        actualizarTabla(tablaVehiculosBajas);
+        vehiculoDAO.actualizarTabla(tablaVehiculosBajas);
         add(panelBajas);
         add(panelDerechoBajas);
     }
@@ -314,66 +314,10 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
         this.add(componente);
     }
 
-    public void actualizarTabla(JTable tabla){
-        final String CONTROLADOR_JDBC = "com.mysql.cj.jdbc.Driver";
-        final String URL = "jdbc:mysql://localhost:3306/BD_Autos_Amistosos";
-        final String CONSULTA = "SELECT * FROM vehiculos";
 
-        try {
-            ResultSetTableModel modelo = new ResultSetTableModel(CONTROLADOR_JDBC, URL, CONSULTA);
-            tabla.setModel(modelo);
-
-            // Aquí pones el renderer para la columna de fecha
-            int columnaFecha = 3; // Cambia 3 por el índice real de la columna fecha en tu tabla
-            tabla.getColumnModel().getColumn(columnaFecha).setCellRenderer(new DefaultTableCellRenderer() {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-                @Override
-                public void setValue(Object value) {
-                    if (value instanceof java.sql.Date) {
-                        LocalDate localDate = ((java.sql.Date) value).toLocalDate();
-                        setText(localDate.format(formatter));
-                    } else {
-                        super.setValue(value);
-                    }
-                }
-            });
-
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
-
-    public void restablecerComponentes(JComponent ... componentes ) {
-
-        for (JComponent  c : componentes){
-            //System.out.println(c);
-            if(c instanceof JTextField) {
-                ((JTextField) c).setText("");
-            }
-            else if(c instanceof JComboBox) {
-                ((JComboBox) c).setSelectedIndex(0);
-            }
-            else if(c instanceof JPasswordField) {
-                ((JPasswordField) c).setText("");
-            }
-            else if(c instanceof JSpinner) {
-                ((JSpinner) c).setValue("0");
-            }
-            else if(c instanceof JRadioButton) {
-                ((JRadioButton) c).setSelected(true);
-            }
-            else if(c instanceof JCheckBox) {
-                ((JCheckBox) c).setSelected(false);
-            }
-        }
-
-    }
 
     public void obtenerDatosVehiculo() {
-
+        vehiculoDAO.actualizarTabla(tablaVehiculosBajas);
         String sql = "SELECT * FROM Vehiculos WHERE Num_Vehiculo = ?";
 
         ResultSet rs = conexionBD.ejecutarConsultaSQL(sql, cajaNumVehiculoBajas.getText());
@@ -407,6 +351,27 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
         }
     }
 
+    public void refrescarTabla(){
+        vehiculoDAO.actualizarTabla(tablaVehiculosBajas);
+    }
+
+    public void limpiarVentana() {
+
+        cajaNumVehiculoBajas.setText("");
+        cajaModeloBajas.setText("");
+        cajaPesoBajas.setText("");
+        cajaPrecioListaBajas.setText("");
+        numCilindrosBajas.setValue("0");
+        capacidadBajas.setValue("0");
+        cbNumPuertasBajas.setSelectedIndex(0);
+        cbDiaBajas.setSelectedIndex(0);
+        cbAñoBajas.setSelectedIndex(0);
+        cbPaisFabBajas.setSelectedIndex(0);
+        cbMesBajas.setSelectedIndex(0);
+        cbColorBajas.setSelectedIndex(0);
+
+    }
+
         @Override
     public void actionPerformed(ActionEvent e) {
         
@@ -423,7 +388,8 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
         } else if (componente == btnEliminar) {
 
             if (vehiculoDAO.eliminarVehiculo(cajaNumVehiculoBajas.getText())){
-                actualizarTabla(tablaVehiculosBajas);
+
+                vehiculoDAO.actualizarTabla(tablaVehiculosBajas);
                 JOptionPane.showMessageDialog(this, "Registro eliminado correctamente");
             }else {
                 JOptionPane.showMessageDialog(this, "ERROR al eliminar el registro");
@@ -434,8 +400,7 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
             if (cajaNumVehiculoBajas.getText().isEmpty()){
                 JOptionPane.showMessageDialog(this,"No hay datos para borrar");
             }
-            restablecerComponentes(cajaNumVehiculoBajas,cajaModeloBajas,cbPaisFabBajas,cbDiaBajas,cbMesBajas,cbAñoBajas,cajaPrecioListaBajas,numCilindrosBajas,cbNumPuertasBajas,cbColorBajas,cajaPesoBajas,capacidadBajas);
-
+            limpiarVentana();
         } else if (componente == btnCancelarBajas) {
             Object[] opciones = {"Sí", "No"};
             int confirm = JOptionPane.showOptionDialog(

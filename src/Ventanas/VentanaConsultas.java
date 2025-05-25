@@ -1,5 +1,7 @@
 package Ventanas;
 
+import Controlador.VehiculoDAO;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -17,6 +19,8 @@ public class VentanaConsultas extends JInternalFrame {
     ImageIcon logoIcon, inicioIcon, personalIcon, encargadoIcon, telefonoIcon, correoIcon, autoIcon, configIcon, registrosIcon;
     JLabel labelLogo, iconoPersonal, textoPersonal, iconoEncargado, textoEncargado, iconoTelefono, textoTelefono, iconoCorreo, textoCorreo, iconoAuto, textoAuto, iconoConfig, textoConfig;
 
+
+    VehiculoDAO vehiculoDAO = VehiculoDAO.getInstancia();
     public VentanaConsultas(){
 
         super("CONSULTAS", true, true, false, true);
@@ -275,6 +279,24 @@ public class VentanaConsultas extends JInternalFrame {
     public void agregarAInternal(JComponent componente, int x, int y, int w, int h) {
         componente.setBounds(x, y, w, h);
         this.add(componente);
+    }
+
+
+
+
+
+
+    public void refrescarTabla(){
+        vehiculoDAO.actualizarTabla(tablaVehiculosConsultas);
+    }
+
+
+
+
+
+    public void actualizarTablaFiltro(JTable tabla){
+
+
     }
 
 }

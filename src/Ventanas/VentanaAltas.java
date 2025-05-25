@@ -273,9 +273,11 @@ public class VentanaAltas extends JInternalFrame implements ActionListener {
 
         btnRestablecerAltas = new JButton("Restablecer");
         agregarAInternal(btnRestablecerAltas,490, 170,110,30);
+        btnRestablecerAltas.addActionListener(this);
 
         btnCancelarAltas = new JButton("Cancelar");
         agregarAInternal(btnCancelarAltas,490,240,110,30);
+        btnCancelarAltas.addActionListener(this);
 
 
 
@@ -296,36 +298,7 @@ public class VentanaAltas extends JInternalFrame implements ActionListener {
         this.add(componente);
     }
 
-    public void actualizarTabla(JTable tabla){
-        final String CONTROLADOR_JDBC = "com.mysql.cj.jdbc.Driver";
-        final String URL = "jdbc:mysql://localhost:3306/BD_Autos_Amistosos";
-        final String CONSULTA = "SELECT * FROM vehiculos";
 
-        try {
-            ResultSetTableModel modelo = new ResultSetTableModel(CONTROLADOR_JDBC, URL, CONSULTA);
-            tabla.setModel(modelo);
-
-            // Aquí pones el renderer para la columna de fecha
-            int columnaFecha = 3; // Cambia 3 por el índice real de la columna fecha en tu tabla
-            tabla.getColumnModel().getColumn(columnaFecha).setCellRenderer(new DefaultTableCellRenderer() {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-                @Override
-                public void setValue(Object value) {
-                    if (value instanceof java.sql.Date) {
-                        LocalDate localDate = ((java.sql.Date) value).toLocalDate();
-                        setText(localDate.format(formatter));
-                    } else {
-                        super.setValue(value);
-                    }
-                }
-            });
-
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 
     public int obtenerNumeroMes(String nombreMes) {
         if (nombreMes.equalsIgnoreCase("Enero")) {
@@ -355,6 +328,31 @@ public class VentanaAltas extends JInternalFrame implements ActionListener {
         } else {
             return -1; // Valor inválido
         }
+    }
+
+
+
+    public void limpiarVentana() {
+
+        cajaNumVehiculoAltas.setText("");
+        cajaModeloAltas.setText("");
+        cajaPesoAltas.setText("");
+        cajaPrecioListaAltas.setText("");
+        numCilindrosAltas.setValue("0");
+        capacidadAltas.setValue("0");
+        cbNumPuertasAltas.setSelectedIndex(0);
+        cbDiaAltas.setSelectedIndex(0);
+        cbAñoAltas.setSelectedIndex(0);
+        cbPaisFabAltas.setSelectedIndex(0);
+        cbMesAltas.setSelectedIndex(0);
+        cbColorAltas.setSelectedIndex(0);
+
+    }
+
+
+
+    public void refrescarTabla(){
+        vehiculoDAO.actualizarTabla(tablaVehiculosAltas);
     }
 
 
@@ -394,11 +392,29 @@ public class VentanaAltas extends JInternalFrame implements ActionListener {
                 System.out.println("ejecutando");
 
 
-                actualizarTabla(tablaVehiculosAltas);
+                vehiculoDAO.actualizarTabla(tablaVehiculosAltas);
 
             } else{
                 JOptionPane.showMessageDialog(this,"Error en la insercion");
                 System.out.println("ERROR en la insercion");
+            }
+        } else if (componente == btnRestablecerAltas) {
+            if (cajaNumVehiculoAltas.getText().isEmpty()){
+                JOptionPane.showMessageDialog(this,"No hay datos para borrar");
+            }
+            limpiarVentana();
+        } else if (componente == btnCancelarAltas) {
+
+            Object[] opciones = {"Sí", "No"};
+            int confirm = JOptionPane.showOptionDialog(
+                    this,"¿Seguro que quieres salir de esta ventana?","Confirmación",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,null, opciones, opciones[0]
+            );
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                //this.dispose();
+                this.setVisible(false);
             }
         }
     }

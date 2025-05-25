@@ -3,6 +3,7 @@ package Ventanas;
 import ConexionBD.ConexionBD;
 import Controlador.VehiculoDAO;
 import Modelo.ResultSetTableModel;
+import Modelo.Vehiculo;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -262,15 +263,19 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
 
         btnBuscarCambios = new JButton("Buscar");
         agregarAInternal(btnBuscarCambios, 320,68,110,30);
+        btnBuscarCambios.addActionListener(this);
 
         btnRestablecerCambios = new JButton("Restablecer");
         agregarAInternal(btnRestablecerCambios, 490, 170,150,30);
+        btnRestablecerCambios.addActionListener(this);
 
         btnGuardarCambios = new JButton("Guardar Cambios");
         agregarAInternal(btnGuardarCambios, 490,240,150,30);
+        btnGuardarCambios.addActionListener(this);
 
         btnCancelarCambios = new JButton("Cancelar");
         agregarAInternal(btnCancelarCambios, 490,310,150,30);
+        btnCancelarCambios.addActionListener(this);
 
 
 
@@ -303,61 +308,21 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
     }
 
 
-    public void actualizarTabla(JTable tabla){
-        final String CONTROLADOR_JDBC = "com.mysql.cj.jdbc.Driver";
-        final String URL = "jdbc:mysql://localhost:3306/BD_Autos_Amistosos";
-        final String CONSULTA = "SELECT * FROM vehiculos";
 
-        try {
-            ResultSetTableModel modelo = new ResultSetTableModel(CONTROLADOR_JDBC, URL, CONSULTA);
-            tabla.setModel(modelo);
+    public void limpiarVentana() {
 
-            // Aquí pones el renderer para la columna de fecha
-            int columnaFecha = 3; // Cambia 3 por el índice real de la columna fecha en tu tabla
-            tabla.getColumnModel().getColumn(columnaFecha).setCellRenderer(new DefaultTableCellRenderer() {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-                @Override
-                public void setValue(Object value) {
-                    if (value instanceof java.sql.Date) {
-                        LocalDate localDate = ((java.sql.Date) value).toLocalDate();
-                        setText(localDate.format(formatter));
-                    } else {
-                        super.setValue(value);
-                    }
-                }
-            });
-
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
-
-    public void restablecerComponentes(JComponent ... componentes ) {
-
-        for (JComponent  c : componentes){
-            //System.out.println(c);
-            if(c instanceof JTextField) {
-                ((JTextField) c).setText("");
-            }
-            else if(c instanceof JComboBox) {
-                ((JComboBox) c).setSelectedIndex(0);
-            }
-            else if(c instanceof JPasswordField) {
-                ((JPasswordField) c).setText("");
-            }
-            else if(c instanceof JSpinner) {
-                ((JSpinner) c).setValue("0");
-            }
-            else if(c instanceof JRadioButton) {
-                ((JRadioButton) c).setSelected(true);
-            }
-            else if(c instanceof JCheckBox) {
-                ((JCheckBox) c).setSelected(false);
-            }
-        }
+        cajaNumVehiculoCambios.setText("");
+        cajaModeloCambios.setText("");
+        cajaPesoCambios.setText("");
+        cajaPrecioListaCambios.setText("");
+        numCilindrosCambios.setValue("0");
+        capacidadCambios.setValue("0");
+        cbNumPuertasCambios.setSelectedIndex(0);
+        cbDiaCambios.setSelectedIndex(0);
+        cbAñoCambios.setSelectedIndex(0);
+        cbPaisFabCambios.setSelectedIndex(0);
+        cbMesCambios.setSelectedIndex(0);
+        cbColorCambios.setSelectedIndex(0);
 
     }
 
@@ -396,6 +361,42 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
         }
     }
 
+    public int obtenerNumeroMes(String nombreMes) {
+        if (nombreMes.equalsIgnoreCase("Enero")) {
+            return 1;
+        } else if (nombreMes.equalsIgnoreCase("Febrero")) {
+            return 2;
+        } else if (nombreMes.equalsIgnoreCase("Marzo")) {
+            return 3;
+        } else if (nombreMes.equalsIgnoreCase("Abril")) {
+            return 4;
+        } else if (nombreMes.equalsIgnoreCase("Mayo")) {
+            return 5;
+        } else if (nombreMes.equalsIgnoreCase("Junio")) {
+            return 6;
+        } else if (nombreMes.equalsIgnoreCase("Julio")) {
+            return 7;
+        } else if (nombreMes.equalsIgnoreCase("Agosto")) {
+            return 8;
+        } else if (nombreMes.equalsIgnoreCase("Septiembre")) {
+            return 9;
+        } else if (nombreMes.equalsIgnoreCase("Octubre")) {
+            return 10;
+        } else if (nombreMes.equalsIgnoreCase("Noviembre")) {
+            return 11;
+        } else if (nombreMes.equalsIgnoreCase("Diciembre")) {
+            return 12;
+        } else {
+            return -1; // Valor inválido
+        }
+    }
+
+    public void refrescarTabla(){
+        vehiculoDAO.actualizarTabla(tablaVehiculosCambios);
+    }
+
+
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -423,11 +424,83 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
             }
         } else if (componente == btnGuardarCambios) {
 
+            try {
+
+                String dia = cbDiaCambios.getSelectedItem().toString();
+                String mes = cbMesCambios.getSelectedItem().toString();
+                String año = cbAñoCambios.getSelectedItem().toString();
+
+                int numMes = obtenerNumeroMes(mes);
+
+                LocalDate fecha = LocalDate.of(Integer.parseInt(año), numMes, Integer.parseInt(dia));
+                Date fechaSQL = java.sql.Date.valueOf(fecha);
+
+
+                Vehiculo v = new Vehiculo(
+                        cajaNumVehiculoCambios.getText(),
+                        cajaModeloCambios.getText(),
+                        cbPaisFabCambios.getSelectedItem().toString(),
+                        fechaSQL,
+                        cajaPrecioListaCambios.getText(),
+                        numCilindrosCambios.getValue().toString(),
+                        Byte.parseByte(cbNumPuertasCambios.getSelectedItem().toString()),
+                        cbColorCambios.getSelectedItem().toString(),
+                        cajaPesoCambios.getText(),
+                        capacidadCambios.getValue().toString());
+
+                if (cajaNumVehiculoCambios.getText().isEmpty() || cajaModeloCambios.getText().isEmpty() || cajaPrecioListaCambios.getText().isEmpty() || cajaPesoCambios.getText().isEmpty()){
+                    JOptionPane.showMessageDialog(this, "Error, Debes llenar todos los campos.");
+                }
+                if (cbPaisFabCambios.getSelectedIndex() == 0 || cbColorCambios.getSelectedIndex() == 0 || cbNumPuertasCambios.getSelectedIndex() == 0 || cbDiaCambios.getSelectedIndex() == 0 || cbMesCambios.getSelectedIndex() == 0 || cbAñoCambios.getSelectedIndex() == 0){
+                    JOptionPane.showMessageDialog(this,"Error selecciona alguna opcion en los comboBox");
+                }
+
+                int cilindros = Integer.parseInt(numCilindrosCambios.getValue().toString());
+                int capacidad = Integer.parseInt(capacidadCambios.getValue().toString());
+
+                if (cilindros == 0 || capacidad == 0) {
+                    JOptionPane.showMessageDialog(this, "Error, selecciona un número válido en los spinners.");
+                    return;
+                }
+
+
+
+                if (vehiculoDAO.editarVehiculo(v)){
+
+                    JOptionPane.showMessageDialog(this,"Registro Editado CORRECTAMENTE");
+                    vehiculoDAO.actualizarTabla(tablaVehiculosCambios);
+
+                } else {
+                    JOptionPane.showMessageDialog(this,"ERROR, al editar registro");
+                }
+            } catch (NumberFormatException e2) {
+                JOptionPane.showMessageDialog(this, "ERROR. Asegúrate de ingresar datos correctos");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado:\n" + ex.getMessage());
+
+            }
+
+
 
         } else if (componente == btnRestablecerCambios) {
 
             if (cajaNumVehiculoCambios.getText().isEmpty()){
                 JOptionPane.showMessageDialog(this,"No hay datos para borrar");
+            }
+            limpiarVentana();
+        } else if (componente == btnCancelarCambios) {
+
+            Object[] opciones = {"Sí", "No"};
+            int confirm = JOptionPane.showOptionDialog(
+                    this,"¿Seguro que quieres salir de esta ventana?","Confirmación",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,null, opciones, opciones[0]
+            );
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                //this.dispose();
+                this.setVisible(false);
             }
         }
     }
