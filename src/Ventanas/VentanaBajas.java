@@ -413,7 +413,12 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
         Object componente = e.getSource();
         
         if (componente == btnBuscarBajas){
-            obtenerDatosVehiculo();
+            try {
+                obtenerDatosVehiculo();
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(this,"Campo vacio, verifica los datos");
+            }
+
 
         } else if (componente == btnEliminar) {
 
@@ -425,6 +430,10 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
             }
 
         } else if (componente == btnRestablecerBajas) {
+
+            if (cajaNumVehiculoBajas.getText().isEmpty()){
+                JOptionPane.showMessageDialog(this,"No hay datos para borrar");
+            }
             restablecerComponentes(cajaNumVehiculoBajas,cajaModeloBajas,cbPaisFabBajas,cbDiaBajas,cbMesBajas,cbAñoBajas,cajaPrecioListaBajas,numCilindrosBajas,cbNumPuertasBajas,cbColorBajas,cajaPesoBajas,capacidadBajas);
 
         } else if (componente == btnCancelarBajas) {

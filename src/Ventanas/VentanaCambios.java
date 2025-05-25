@@ -1,22 +1,36 @@
 package Ventanas;
 
-import javax.swing.*;
-import java.awt.*;
-import java.text.NumberFormat;
+import ConexionBD.ConexionBD;
+import Controlador.VehiculoDAO;
+import Modelo.ResultSetTableModel;
 
-public class VentanaCambios extends JInternalFrame {
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
+public class VentanaCambios extends JInternalFrame implements ActionListener {
 
     JButton btnBuscarCambios, btnRestablecerCambios, btnGuardarCambios, btnCancelarCambios, btnRegistrosCambios, btnInicio;
-    JTextField  idVehiculoCambios, modeloCambios, pesoCambios;
-    JFormattedTextField precioListaCambios;
+    JTextField  cajaNumVehiculoCambios, cajaModeloCambios, cajaPesoCambios, cajaPrecioListaCambios;
     JSpinner numCilindrosCambios, capacidadCambios;
-    JComboBox<Integer> numPuertasCambios, diaCambios, añoCambios;
-    JComboBox<String> paisFabCambios, mesCambios, colorCambios;
+    JComboBox<Integer> cbNumPuertasCambios, cbDiaCambios, cbAñoCambios;
+    JComboBox<String> cbPaisFabCambios, cbMesCambios, cbColorCambios;
     JTable  tablaVehiculosCambios;
 
     ImageIcon logoIcon, inicioIcon, personalIcon, encargadoIcon, telefonoIcon, correoIcon, autoIcon, configIcon, registrosIcon;
     JLabel labelLogo, iconoPersonal, textoPersonal, iconoEncargado, textoEncargado, iconoTelefono, textoTelefono, iconoCorreo, textoCorreo, iconoAuto, textoAuto, iconoConfig, textoConfig;
 
+
+    ConexionBD conexionBD = ConexionBD.getInstancia();
+    VehiculoDAO vehiculoDAO = VehiculoDAO.getInstancia();
     public VentanaCambios(){
 
         super("CAMBIOS", true, true, false, true);
@@ -132,8 +146,8 @@ public class VentanaCambios extends JInternalFrame {
         JLabel txtIdVehiculoCambios = new JLabel("Numero Vehiculo:");
         agregarAInternal(txtIdVehiculoCambios,10,70,120,20);
 
-        idVehiculoCambios = new JTextField();
-        agregarAInternal(idVehiculoCambios,135, 68,100,30);
+        cajaNumVehiculoCambios = new JTextField();
+        agregarAInternal(cajaNumVehiculoCambios,135, 68,100,30);
 
         JSeparator separadorCambios = new JSeparator();
         separadorCambios.setForeground(Color.GRAY);
@@ -142,8 +156,8 @@ public class VentanaCambios extends JInternalFrame {
         JLabel txtModeloCambios = new JLabel("Modelo:");
         agregarAInternal(txtModeloCambios,10,113,120,20);
 
-        modeloCambios = new JTextField();
-        agregarAInternal(modeloCambios,135,113,100,25);
+        cajaModeloCambios = new JTextField();
+        agregarAInternal(cajaModeloCambios,135,113,100,25);
 
         JLabel txtPaisFabCambios = new JLabel("Pais de Fabricacion");
         agregarAInternal(txtPaisFabCambios,10,150,120,20);
@@ -159,9 +173,9 @@ public class VentanaCambios extends JInternalFrame {
                 "Túnez", "Turquía", "Ucrania", "Uzbekistán", "Vietnam"
         };
 
-        paisFabCambios = new JComboBox<>(paisesFabricantesCambios);
-        paisFabCambios.setEditable(false);
-        agregarAInternal(paisFabCambios,135,148,120,25);
+        cbPaisFabCambios = new JComboBox<>(paisesFabricantesCambios);
+        cbPaisFabCambios.setEditable(false);
+        agregarAInternal(cbPaisFabCambios,135,148,120,25);
 
         JLabel txtFechaFabCambios = new JLabel("Fecha de Fabricación:");
         agregarAInternal(txtFechaFabCambios, 10, 180, 150, 20);
@@ -170,25 +184,25 @@ public class VentanaCambios extends JInternalFrame {
                 "Elije un mes..", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
         };
-        diaCambios = new JComboBox<>();
-        for (int d = 0; d <= 31; d++) diaCambios.addItem(d);
-        agregarAInternal(diaCambios, 160, 180, 50, 25);
+        cbDiaCambios = new JComboBox<>();
+        for (int d = 0; d <= 31; d++) cbDiaCambios.addItem(d);
+        agregarAInternal(cbDiaCambios, 160, 180, 50, 25);
 
-        mesCambios = new JComboBox<>(mesesCambios);
+        cbMesCambios = new JComboBox<>(mesesCambios);
+        agregarAInternal(cbMesCambios, 215, 180, 100, 25);
 
-        agregarAInternal(mesCambios, 215, 180, 100, 25);
-
-        añoCambios = new JComboBox<>();
+        cbAñoCambios = new JComboBox<>();
+        cbAñoCambios.addItem(0);
         for (int a = 1900; a <= 2025; a++) {
-            añoCambios.addItem(a);
+            cbAñoCambios.addItem(a);
         }
-        agregarAInternal(añoCambios, 320, 180, 80, 25);
+        agregarAInternal(cbAñoCambios, 320, 180, 80, 25);
 
         JLabel txtPrecioListaCambios = new JLabel("Precio de Lista:");
         agregarAInternal(txtPrecioListaCambios, 10, 210, 120, 20);
 
-        precioListaCambios = new JFormattedTextField(NumberFormat.getNumberInstance());
-        agregarAInternal(precioListaCambios, 135, 213, 150, 25);
+        cajaPrecioListaCambios = new JTextField();
+        agregarAInternal(cajaPrecioListaCambios, 135, 213, 150, 25);
 
         JLabel txtCilindrosCambios = new JLabel("Cilindros:");
         agregarAInternal(txtCilindrosCambios, 10, 240, 120, 20);
@@ -209,14 +223,14 @@ public class VentanaCambios extends JInternalFrame {
         JLabel txtPuertasCambios = new JLabel("Número de Puertas:");
         agregarAInternal(txtPuertasCambios, 10, 270, 120, 20);
 
-        numPuertasCambios = new JComboBox<>(new Integer[]{0, 2, 3, 4, 5});
-        agregarAInternal(numPuertasCambios, 160, 273, 50, 25);
+        cbNumPuertasCambios = new JComboBox<>(new Integer[]{0, 2, 3, 4, 5});
+        agregarAInternal(cbNumPuertasCambios, 160, 273, 50, 25);
 
         JLabel txtPesoCambios = new JLabel("Peso:");
         agregarAInternal(txtPesoCambios,10,330,80,20);
 
-        pesoCambios = new JTextField();
-        agregarAInternal(pesoCambios,135,333,150,25);
+        cajaPesoCambios = new JTextField();
+        agregarAInternal(cajaPesoCambios,135,333,150,25);
 
         JLabel txtColorCambios = new JLabel("Color:");
         agregarAInternal(txtColorCambios, 10, 300, 120, 20);
@@ -227,8 +241,8 @@ public class VentanaCambios extends JInternalFrame {
                 "Vino", "Azul Marino", "Gris Oxford"
         };
 
-        colorCambios = new JComboBox<>(coloresAutoCambios);
-        agregarAInternal(colorCambios, 135, 303, 120, 25);
+        cbColorCambios = new JComboBox<>(coloresAutoCambios);
+        agregarAInternal(cbColorCambios, 135, 303, 120, 25);
 
         String[] columnasCambios = {"Num_Vehiculo", "Modelo", "País", "Fecha Fab", "Precio", "Cilindros", "Capacidad", "Puertas", "Color"};
         String[][] datosCambios = {
@@ -260,6 +274,20 @@ public class VentanaCambios extends JInternalFrame {
 
 
 
+        cajaModeloCambios.setEnabled(false);
+        cbPaisFabCambios.setEnabled(false);
+        cbDiaCambios.setEnabled(false);
+        cbMesCambios.setEnabled(false);
+        cbAñoCambios.setEnabled(false);
+        cajaPrecioListaCambios.setEnabled(false);
+        numCilindrosCambios.setEnabled(false);
+        cbNumPuertasCambios.setEnabled(false);
+        cbColorCambios.setEnabled(false);
+        cajaPesoCambios.setEnabled(false);
+        capacidadCambios.setEnabled(false);
+
+
+
         add(panelCambios);
         add(panelDerechoCambios);
     }
@@ -274,4 +302,133 @@ public class VentanaCambios extends JInternalFrame {
         this.add(componente);
     }
 
+
+    public void actualizarTabla(JTable tabla){
+        final String CONTROLADOR_JDBC = "com.mysql.cj.jdbc.Driver";
+        final String URL = "jdbc:mysql://localhost:3306/BD_Autos_Amistosos";
+        final String CONSULTA = "SELECT * FROM vehiculos";
+
+        try {
+            ResultSetTableModel modelo = new ResultSetTableModel(CONTROLADOR_JDBC, URL, CONSULTA);
+            tabla.setModel(modelo);
+
+            // Aquí pones el renderer para la columna de fecha
+            int columnaFecha = 3; // Cambia 3 por el índice real de la columna fecha en tu tabla
+            tabla.getColumnModel().getColumn(columnaFecha).setCellRenderer(new DefaultTableCellRenderer() {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                @Override
+                public void setValue(Object value) {
+                    if (value instanceof java.sql.Date) {
+                        LocalDate localDate = ((java.sql.Date) value).toLocalDate();
+                        setText(localDate.format(formatter));
+                    } else {
+                        super.setValue(value);
+                    }
+                }
+            });
+
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+    public void restablecerComponentes(JComponent ... componentes ) {
+
+        for (JComponent  c : componentes){
+            //System.out.println(c);
+            if(c instanceof JTextField) {
+                ((JTextField) c).setText("");
+            }
+            else if(c instanceof JComboBox) {
+                ((JComboBox) c).setSelectedIndex(0);
+            }
+            else if(c instanceof JPasswordField) {
+                ((JPasswordField) c).setText("");
+            }
+            else if(c instanceof JSpinner) {
+                ((JSpinner) c).setValue("0");
+            }
+            else if(c instanceof JRadioButton) {
+                ((JRadioButton) c).setSelected(true);
+            }
+            else if(c instanceof JCheckBox) {
+                ((JCheckBox) c).setSelected(false);
+            }
+        }
+
+    }
+
+    public void obtenerDatosVehiculo() {
+
+        String sql = "SELECT * FROM Vehiculos WHERE Num_Vehiculo = ?";
+
+        ResultSet rs = conexionBD.ejecutarConsultaSQL(sql, cajaNumVehiculoCambios.getText());
+
+        try {
+            if (rs != null && rs.next()) {
+                cajaModeloCambios.setText(rs.getString("Modelo"));
+                cbPaisFabCambios.setSelectedItem(rs.getString("Pais_Fab"));
+
+
+                Date fechaSql = rs.getDate("Fecha_Fab");
+                if (fechaSql != null) {
+                    LocalDate localDate = ((java.sql.Date) fechaSql).toLocalDate();
+                    cbAñoCambios.setSelectedItem(localDate.getYear());
+                    cbMesCambios.setSelectedIndex(localDate.getMonthValue());
+                    cbDiaCambios.setSelectedItem(localDate.getDayOfMonth());
+
+                }
+                cajaPrecioListaCambios.setText(rs.getString("Precio_Lista"));
+                numCilindrosCambios.setValue(rs.getString("Num_Cilindros"));
+                cbNumPuertasCambios.setSelectedItem(rs.getInt("Num_Puertas"));
+                cbColorCambios.setSelectedItem(rs.getString("Color"));
+                cajaPesoCambios.setText(rs.getString("Peso"));
+                capacidadCambios.setValue(rs.getString("Cap_Personas"));
+
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al obtener los datos del vehiculo.");
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        Object componente  = e.getSource();
+
+        if (componente == btnBuscarCambios){
+
+            try{
+                cajaModeloCambios.setEnabled(true);
+                cbPaisFabCambios.setEnabled(true);
+                cbDiaCambios.setEnabled(true);
+                cbMesCambios.setEnabled(true);
+                cbAñoCambios.setEnabled(true);
+                cajaPrecioListaCambios.setEnabled(true);
+                numCilindrosCambios.setEnabled(true);
+                cbNumPuertasCambios.setEnabled(true);
+                cbColorCambios.setEnabled(true);
+                cajaPesoCambios.setEnabled(true);
+                capacidadCambios.setEnabled(true);
+
+                obtenerDatosVehiculo();
+
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(this,"Campo vacio, verifica los datos");
+            }
+        } else if (componente == btnGuardarCambios) {
+
+
+        } else if (componente == btnRestablecerCambios) {
+
+            if (cajaNumVehiculoCambios.getText().isEmpty()){
+                JOptionPane.showMessageDialog(this,"No hay datos para borrar");
+            }
+        }
+    }
 }
