@@ -21,10 +21,10 @@ import java.util.Date;
 public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
     JButton btnRegistrosConsultas, btnInicio, btnBuscarConsultas, btnRestablecerConsultas, btnCancelarConsultas, btnPrimerReg, btnAnteriorReg, btnSiguienteReg, btnUltimoReg;
-    JTextField cajaModeloConsultas, cajaPesoConsultas, cajaFechaFabConsultas, cajaPrecioListaConsultas, cajaIndice;
+    JTextField cajaModeloConsultas, cajaFechaFabConsultas, cajaPrecioListaConsultas, cajaIndice;
     JSpinner numCilindrosConsultas, capacidadConsultas;
     JComboBox<Integer> cbNumPuertasConsultas;
-    JComboBox<String> cbPaisFabConsultas, cbColorConsultas;
+    JComboBox<String> cbPaisFabConsultas, cbColorConsultas, cbPesoConsultas;
     JTable  tablaVehiculosConsultas;
     ButtonGroup rbGroup;
     JRadioButton rbTodos, rbModelo, rbPaisFab, rbFechaFab, rbPrecioLista, rbCilindros, rbNumPuertas, rbColor, rbPeso, rbCapacidad;
@@ -64,6 +64,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
         btnInicio.setForeground(Color.WHITE);
         btnInicio.setFocusPainted(false);
         agregarComponentePanel(panelDerechoConsultas, btnInicio, 15, 220, 130, 30);
+        btnInicio.addActionListener(this);
 
         personalIcon = new ImageIcon("img/personal.png");
         iconoPersonal = new JLabel(new ImageIcon(personalIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
@@ -130,7 +131,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
         btnRegistrosConsultas.setForeground(Color.WHITE);
         btnRegistrosConsultas.setFocusPainted(false);
         agregarComponentePanel(panelDerechoConsultas, btnRegistrosConsultas, 15, 520, 130, 30);
-
+        btnRegistrosConsultas.addActionListener(this);
 
 
         JLabel txtConsultas = new JLabel("CONSULTAR VEHICULOS");
@@ -227,9 +228,17 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
         agregarAInternal(rbPeso,100,310,80,20);
         rbPeso.addActionListener(this);
 
-        cajaPesoConsultas = new JTextField();
-        agregarAInternal(cajaPesoConsultas,270,310,120,25);
-        cajaPesoConsultas.setEnabled(false);
+        String[] pesos = {
+                "Elije peso..", "800 kg", "900 kg", "1000 kg",
+                "1100 kg", "1200 kg", "1300 kg",
+                "1400 kg", "1500 kg", "1600 kg",
+                "1700 kg", "1800 kg", "1900 kg",
+                "2000 kg", "2200 kg", "2400 kg",
+                "2600 kg", "2800 kg", "3000 kg"
+        };
+        cbPesoConsultas = new JComboBox<>(pesos);
+        agregarAInternal(cbPesoConsultas,270,310,120,25);
+        cbPesoConsultas.setEnabled(false);
 
         rbCapacidad = new JRadioButton("CAPACIDAD PERSONAS:");
         agregarAInternal(rbCapacidad,100,340,170,20);
@@ -331,14 +340,17 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
     public void limpiarVentana() {
 
         cajaModeloConsultas.setText("");
-        cajaPesoConsultas.setText("");
+        cbPesoConsultas.setSelectedIndex(0);
         cajaPrecioListaConsultas.setText("");
         numCilindrosConsultas.setValue("0");
         capacidadConsultas.setValue("0");
         cbNumPuertasConsultas.setSelectedIndex(0);
         cbPaisFabConsultas.setSelectedIndex(0);
         cbColorConsultas.setSelectedIndex(0);
+        cajaFechaFabConsultas.setText("");
+        cajaIndice.setText("0");
         rbGroup.clearSelection();
+        posActual = -1;
 
 
     }
@@ -388,7 +400,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             } else if (rbColor.isSelected()) {
                 modelo = vehiculoDAO.obtenerVehiculosFiltrados("Color", cbColorConsultas.getSelectedItem().toString());
             } else if (rbPeso.isSelected()) {
-                modelo = vehiculoDAO.obtenerVehiculosFiltrados("Peso", cajaPesoConsultas.getText());
+                modelo = vehiculoDAO.obtenerVehiculosFiltrados("Peso", cbPesoConsultas.getSelectedItem().toString());
             } else if (rbCapacidad.isSelected()) {
                 modelo = vehiculoDAO.obtenerVehiculosFiltrados("Cap_Personas", capacidadConsultas.getValue().toString());
             } else {
@@ -489,7 +501,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             numCilindrosConsultas.setValue(reg.getNumCilindros());
             cbNumPuertasConsultas.setSelectedItem((int) reg.getNumPuertas());
             cbColorConsultas.setSelectedItem(reg.getColor());
-            cajaPesoConsultas.setText(reg.getPeso());
+            cbPesoConsultas.setSelectedItem(reg.getPaisFab());
             capacidadConsultas.setValue(reg.getCapacidadPersonas());
 
             cajaIndice.setText(String.valueOf(indice + 1));
@@ -560,10 +572,11 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             numCilindrosConsultas.setEnabled(false);
             cbNumPuertasConsultas.setEnabled(false);
             cbColorConsultas.setEnabled(false);
-            cajaPesoConsultas.setEnabled(false);
+            cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(false);
 
             actualizarTablaFiltro(tablaVehiculosConsultas);
+
         } else if (componente == rbModelo) {
             cajaModeloConsultas.setEnabled(true);
             cbPaisFabConsultas.setEnabled(false);
@@ -572,9 +585,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             numCilindrosConsultas.setEnabled(false);
             cbNumPuertasConsultas.setEnabled(false);
             cbColorConsultas.setEnabled(false);
-            cajaPesoConsultas.setEnabled(false);
+            cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(false);
             actualizarTablaFiltro(tablaVehiculosConsultas);
+
         } else if (componente == rbPaisFab) {
             cajaModeloConsultas.setEnabled(false);
             cbPaisFabConsultas.setEnabled(true);
@@ -583,9 +597,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             numCilindrosConsultas.setEnabled(false);
             cbNumPuertasConsultas.setEnabled(false);
             cbColorConsultas.setEnabled(false);
-            cajaPesoConsultas.setEnabled(false);
+            cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(false);
             actualizarTablaFiltro(tablaVehiculosConsultas);
+
         } else if (componente == rbFechaFab) {
             cajaModeloConsultas.setEnabled(false);
             cbPaisFabConsultas.setEnabled(false);
@@ -594,9 +609,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             numCilindrosConsultas.setEnabled(false);
             cbNumPuertasConsultas.setEnabled(false);
             cbColorConsultas.setEnabled(false);
-            cajaPesoConsultas.setEnabled(false);
+            cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(false);
             actualizarTablaFiltro(tablaVehiculosConsultas);
+
         } else if (componente == rbPrecioLista) {
             cajaModeloConsultas.setEnabled(false);
             cbPaisFabConsultas.setEnabled(false);
@@ -605,9 +621,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             numCilindrosConsultas.setEnabled(false);
             cbNumPuertasConsultas.setEnabled(false);
             cbColorConsultas.setEnabled(false);
-            cajaPesoConsultas.setEnabled(false);
+            cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(false);
             actualizarTablaFiltro(tablaVehiculosConsultas);
+
         } else if (componente == rbCilindros) {
             cajaModeloConsultas.setEnabled(false);
             cbPaisFabConsultas.setEnabled(false);
@@ -616,9 +633,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             numCilindrosConsultas.setEnabled(true);
             cbNumPuertasConsultas.setEnabled(false);
             cbColorConsultas.setEnabled(false);
-            cajaPesoConsultas.setEnabled(false);
+            cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(false);
             actualizarTablaFiltro(tablaVehiculosConsultas);
+
         } else if (componente == rbNumPuertas) {
             cajaModeloConsultas.setEnabled(false);
             cbPaisFabConsultas.setEnabled(false);
@@ -627,9 +645,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             numCilindrosConsultas.setEnabled(false);
             cbNumPuertasConsultas.setEnabled(true);
             cbColorConsultas.setEnabled(false);
-            cajaPesoConsultas.setEnabled(false);
+            cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(false);
             actualizarTablaFiltro(tablaVehiculosConsultas);
+
         } else if (componente == rbColor) {
             cajaModeloConsultas.setEnabled(false);
             cbPaisFabConsultas.setEnabled(false);
@@ -638,9 +657,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             numCilindrosConsultas.setEnabled(false);
             cbNumPuertasConsultas.setEnabled(false);
             cbColorConsultas.setEnabled(true);
-            cajaPesoConsultas.setEnabled(false);
+            cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(false);
             actualizarTablaFiltro(tablaVehiculosConsultas);
+
         } else if (componente == rbPeso) {
             cajaModeloConsultas.setEnabled(false);
             cbPaisFabConsultas.setEnabled(false);
@@ -649,9 +669,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             numCilindrosConsultas.setEnabled(false);
             cbNumPuertasConsultas.setEnabled(false);
             cbColorConsultas.setEnabled(false);
-            cajaPesoConsultas.setEnabled(true);
+            cbPesoConsultas.setEnabled(true);
             capacidadConsultas.setEnabled(false);
             actualizarTablaFiltro(tablaVehiculosConsultas);
+
         } else if (componente == rbCapacidad) {
             cajaModeloConsultas.setEnabled(false);
             cbPaisFabConsultas.setEnabled(false);
@@ -660,30 +681,37 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             numCilindrosConsultas.setEnabled(false);
             cbNumPuertasConsultas.setEnabled(false);
             cbColorConsultas.setEnabled(false);
-            cajaPesoConsultas.setEnabled(false);
+            cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(true);
              actualizarTablaFiltro(tablaVehiculosConsultas);
+
         } else if (componente == btnPrimerReg) {
-            System.out.println("Primer registro");
+
             if (!listaVehiculos.isEmpty()) {
                 mostrarRegistros(0);
 
             }
         } else if (componente == btnAnteriorReg) {
-            System.out.println("anterior registro");
+
             if (posActual > 0) {
                 mostrarRegistros(posActual - 1);
             }
         } else if (componente == btnSiguienteReg) {
-            System.out.println("Seg registro");
+
             if (posActual < listaVehiculos.size() - 1) {
                 mostrarRegistros(posActual + 1);
             }
         } else if (componente == btnUltimoReg) {
-            System.out.println("Ult registro");
+
             if (!listaVehiculos.isEmpty()) {
                 mostrarRegistros(listaVehiculos.size() - 1);
             }
+
+        } else if (componente == btnInicio) {
+            refrescarTabla();
+            limpiarVentana();
+            this.setVisible(false);
         }
+        listaVehiculos = añadirVehiculos();
     }
 }

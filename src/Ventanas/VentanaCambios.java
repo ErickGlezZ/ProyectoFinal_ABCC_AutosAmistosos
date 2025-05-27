@@ -20,10 +20,10 @@ import java.util.Date;
 public class VentanaCambios extends JInternalFrame implements ActionListener {
 
     JButton btnBuscarCambios, btnRestablecerCambios, btnGuardarCambios, btnCancelarCambios, btnRegistrosCambios, btnInicio;
-    JTextField  cajaNumVehiculoCambios, cajaModeloCambios, cajaPesoCambios, cajaPrecioListaCambios;
+    JTextField  cajaNumVehiculoCambios, cajaModeloCambios, cajaPrecioListaCambios;
     JSpinner numCilindrosCambios, capacidadCambios;
     JComboBox<Integer> cbNumPuertasCambios, cbDiaCambios, cbAñoCambios;
-    JComboBox<String> cbPaisFabCambios, cbMesCambios, cbColorCambios;
+    JComboBox<String> cbPaisFabCambios, cbMesCambios, cbColorCambios, cbPesoCambios;
     JTable  tablaVehiculosCambios;
 
     ImageIcon logoIcon, inicioIcon, personalIcon, encargadoIcon, telefonoIcon, correoIcon, autoIcon, configIcon, registrosIcon;
@@ -64,6 +64,7 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
         btnInicio.setForeground(Color.WHITE);
         btnInicio.setFocusPainted(false);
         agregarComponentePanel(panelDerechoCambios, btnInicio, 15, 220, 130, 30);
+        btnInicio.addActionListener(this);
 
 
         personalIcon = new ImageIcon("img/personal.png");
@@ -138,6 +139,7 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
         btnRegistrosCambios.setForeground(Color.WHITE);
         btnRegistrosCambios.setFocusPainted(false);
         agregarComponentePanel(panelDerechoCambios, btnRegistrosCambios, 15, 520, 130, 30);
+        btnRegistrosCambios.addActionListener(this);
 
         JLabel txtCambios = new JLabel("CAMBIOS VEHICULOS");
         txtCambios.setFont(new Font("Roboto", Font.BOLD, 15));
@@ -230,8 +232,16 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
         JLabel txtPesoCambios = new JLabel("Peso:");
         agregarAInternal(txtPesoCambios,10,330,80,20);
 
-        cajaPesoCambios = new JTextField();
-        agregarAInternal(cajaPesoCambios,135,333,150,25);
+        String[] pesos = {
+                "Elije peso..", "800 kg", "900 kg", "1000 kg",
+                "1100 kg", "1200 kg", "1300 kg",
+                "1400 kg", "1500 kg", "1600 kg",
+                "1700 kg", "1800 kg", "1900 kg",
+                "2000 kg", "2200 kg", "2400 kg",
+                "2600 kg", "2800 kg", "3000 kg"
+        };
+        cbPesoCambios = new JComboBox<>(pesos);
+        agregarAInternal(cbPesoCambios,135,333,150,25);
 
         JLabel txtColorCambios = new JLabel("Color:");
         agregarAInternal(txtColorCambios, 10, 300, 120, 20);
@@ -288,7 +298,7 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
         numCilindrosCambios.setEnabled(false);
         cbNumPuertasCambios.setEnabled(false);
         cbColorCambios.setEnabled(false);
-        cajaPesoCambios.setEnabled(false);
+        cbPesoCambios.setEnabled(false);
         capacidadCambios.setEnabled(false);
 
 
@@ -313,7 +323,7 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
 
         cajaNumVehiculoCambios.setText("");
         cajaModeloCambios.setText("");
-        cajaPesoCambios.setText("");
+        cbPesoCambios.setSelectedIndex(0);
         cajaPrecioListaCambios.setText("");
         numCilindrosCambios.setValue("0");
         capacidadCambios.setValue("0");
@@ -350,7 +360,7 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
                 numCilindrosCambios.setValue(rs.getString("Num_Cilindros"));
                 cbNumPuertasCambios.setSelectedItem(rs.getInt("Num_Puertas"));
                 cbColorCambios.setSelectedItem(rs.getString("Color"));
-                cajaPesoCambios.setText(rs.getString("Peso"));
+                cbPesoCambios.setSelectedItem(rs.getString("Peso"));
                 capacidadCambios.setValue(rs.getString("Cap_Personas"));
 
 
@@ -387,7 +397,7 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
         } else if (nombreMes.equalsIgnoreCase("Diciembre")) {
             return 12;
         } else {
-            return -1; // Valor inválido
+            return -1;
         }
     }
 
@@ -414,7 +424,7 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
                 numCilindrosCambios.setEnabled(true);
                 cbNumPuertasCambios.setEnabled(true);
                 cbColorCambios.setEnabled(true);
-                cajaPesoCambios.setEnabled(true);
+                cbPesoCambios.setEnabled(true);
                 capacidadCambios.setEnabled(true);
 
                 obtenerDatosVehiculo();
@@ -445,13 +455,13 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
                         numCilindrosCambios.getValue().toString(),
                         Byte.parseByte(cbNumPuertasCambios.getSelectedItem().toString()),
                         cbColorCambios.getSelectedItem().toString(),
-                        cajaPesoCambios.getText(),
+                        cbPesoCambios.getSelectedItem().toString(),
                         capacidadCambios.getValue().toString());
 
-                if (cajaNumVehiculoCambios.getText().isEmpty() || cajaModeloCambios.getText().isEmpty() || cajaPrecioListaCambios.getText().isEmpty() || cajaPesoCambios.getText().isEmpty()){
+                if (cajaNumVehiculoCambios.getText().isEmpty() || cajaModeloCambios.getText().isEmpty() || cajaPrecioListaCambios.getText().isEmpty()){
                     JOptionPane.showMessageDialog(this, "Error, Debes llenar todos los campos.");
                 }
-                if (cbPaisFabCambios.getSelectedIndex() == 0 || cbColorCambios.getSelectedIndex() == 0 || cbNumPuertasCambios.getSelectedIndex() == 0 || cbDiaCambios.getSelectedIndex() == 0 || cbMesCambios.getSelectedIndex() == 0 || cbAñoCambios.getSelectedIndex() == 0){
+                if (cbPaisFabCambios.getSelectedIndex() == 0 || cbPesoCambios.getSelectedIndex() == 0 || cbColorCambios.getSelectedIndex() == 0 || cbNumPuertasCambios.getSelectedIndex() == 0 || cbDiaCambios.getSelectedIndex() == 0 || cbMesCambios.getSelectedIndex() == 0 || cbAñoCambios.getSelectedIndex() == 0){
                     JOptionPane.showMessageDialog(this,"Error selecciona alguna opcion en los comboBox");
                 }
 
@@ -502,6 +512,12 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
                 //this.dispose();
                 this.setVisible(false);
             }
+        } else if (componente == btnRegistrosCambios) {
+            refrescarTabla();
+        } else if (componente == btnInicio) {
+            refrescarTabla();
+            limpiarVentana();
+            this.setVisible(false);
         }
     }
 }

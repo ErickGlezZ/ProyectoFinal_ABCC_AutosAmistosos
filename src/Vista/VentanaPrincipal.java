@@ -15,7 +15,7 @@ import java.beans.PropertyVetoException;
 public class VentanaPrincipal extends JFrame implements ActionListener {
 
     JDesktopPane desktopPane;
-    JMenu menuVehiculos;
+    JMenu menuVehiculos, menuClientes, menuVendedores, menuVentas;
     JMenuItem itemAltas, itemBajas, itemCambios, itemConsultas;
     JButton btnToolAgregar, btnToolEliminar, btnToolCambiar, btnToolConsultar;
 
@@ -37,6 +37,9 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
 
         JMenuBar menuBar = new JMenuBar();
         menuVehiculos = new JMenu("Vehiculos");
+        menuClientes = new JMenu("Clientes");
+        menuVendedores = new JMenu("Vendedores");
+        menuVentas = new JMenu("Ventas");
 
         itemAltas = new JMenuItem("Agregar");
         itemBajas = new JMenuItem("Eliminar");
@@ -54,6 +57,10 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         menuVehiculos.add(itemConsultas);
 
         menuBar.add(menuVehiculos);
+        menuBar.add(menuClientes);
+        menuBar.add(menuVendedores);
+        menuBar.add(menuVentas);
+
         setJMenuBar(menuBar);
 
         JToolBar toolBar = new JToolBar("Herramientas");

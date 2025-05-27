@@ -19,10 +19,10 @@ import java.util.Date;
 public class VentanaBajas extends JInternalFrame implements ActionListener {
 
     JButton  btnEliminar, btnRestablecerBajas, btnCancelarBajas, btnBuscarBajas, btnInicio, btnRegistrosBajas;
-    JTextField cajaNumVehiculoBajas, cajaModeloBajas, cajaPesoBajas, cajaPrecioListaBajas;
+    JTextField cajaNumVehiculoBajas, cajaModeloBajas, cajaPrecioListaBajas;
     JSpinner numCilindrosBajas, capacidadBajas;
     JComboBox<Integer> cbNumPuertasBajas, cbDiaBajas, cbAñoBajas;
-    JComboBox<String> cbPaisFabBajas, cbMesBajas, cbColorBajas;
+    JComboBox<String> cbPaisFabBajas, cbMesBajas, cbColorBajas, cbPesoBajas;
     JTable tablaVehiculosBajas;
 
     ImageIcon logoIcon, inicioIcon, personalIcon, encargadoIcon, telefonoIcon, correoIcon, autoIcon, configIcon, registrosIcon;
@@ -63,6 +63,7 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
         btnInicio.setForeground(Color.WHITE);
         btnInicio.setFocusPainted(false);
         agregarComponentePanel(panelDerechoBajas, btnInicio, 15, 220, 130, 30);
+        btnInicio.addActionListener(this);
 
 
         personalIcon = new ImageIcon("img/personal.png");
@@ -137,6 +138,7 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
         btnRegistrosBajas.setForeground(Color.WHITE);
         btnRegistrosBajas.setFocusPainted(false);
         agregarComponentePanel(panelDerechoBajas, btnRegistrosBajas, 15, 520, 130, 30);
+        btnRegistrosBajas.addActionListener(this);
 
         JLabel txtBajas = new JLabel("BAJAS VEHICULOS");
         txtBajas.setFont(new Font("Roboto", Font.BOLD, 15));
@@ -238,8 +240,16 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
         JLabel txtPesoBajas = new JLabel("Peso:");
         agregarAInternal(txtPesoBajas,10,330,80,20);
 
-        cajaPesoBajas = new JTextField();
-        agregarAInternal(cajaPesoBajas,135,333,150,25);
+        String[] pesos = {
+                "Elije peso..", "800 kg", "900 kg", "1000 kg",
+                "1100 kg", "1200 kg", "1300 kg",
+                "1400 kg", "1500 kg", "1600 kg",
+                "1700 kg", "1800 kg", "1900 kg",
+                "2000 kg", "2200 kg", "2400 kg",
+                "2600 kg", "2800 kg", "3000 kg"
+        };
+        cbPesoBajas = new JComboBox<>(pesos);
+        agregarAInternal(cbPesoBajas,135,333,120,25);
 
         JLabel txtColorBajas = new JLabel("Color:");
         agregarAInternal(txtColorBajas, 10, 300, 120, 20);
@@ -295,7 +305,7 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
         numCilindrosBajas.setEnabled(false);
         cbNumPuertasBajas.setEnabled(false);
         cbColorBajas.setEnabled(false);
-        cajaPesoBajas.setEnabled(false);
+        cbPesoBajas.setEnabled(false);
         capacidadBajas.setEnabled(false);
 
 
@@ -340,7 +350,7 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
                     numCilindrosBajas.setValue(rs.getString("Num_Cilindros"));
                     cbNumPuertasBajas.setSelectedItem(rs.getInt("Num_Puertas"));
                     cbColorBajas.setSelectedItem(rs.getString("Color"));
-                    cajaPesoBajas.setText(rs.getString("Peso"));
+                    cbPesoBajas.setSelectedItem(rs.getString("Peso"));
                     capacidadBajas.setValue(rs.getString("Cap_Personas"));
 
 
@@ -359,7 +369,7 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
 
         cajaNumVehiculoBajas.setText("");
         cajaModeloBajas.setText("");
-        cajaPesoBajas.setText("");
+        cbPesoBajas.setSelectedIndex(0);
         cajaPrecioListaBajas.setText("");
         numCilindrosBajas.setValue("0");
         capacidadBajas.setValue("0");
@@ -413,6 +423,12 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
                 //this.dispose();
                 this.setVisible(false);
             }
+        } else if (componente == btnRegistrosBajas) {
+            refrescarTabla();
+        } else if (componente == btnInicio) {
+            refrescarTabla();
+            limpiarVentana();
+            this.setVisible(false);
         }
-        }
+    }
 }

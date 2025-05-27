@@ -3,6 +3,7 @@ package Ventanas;
 import Controlador.VehiculoDAO;
 import Modelo.ResultSetTableModel;
 import Modelo.Vehiculo;
+import com.mysql.cj.jdbc.exceptions.MysqlDataTruncation;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -10,6 +11,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -20,13 +23,13 @@ import java.util.stream.StreamSupport;
 
 import static java.util.Date.*;
 
-public class VentanaAltas extends JInternalFrame implements ActionListener {
+public class VentanaAltas extends JInternalFrame implements ActionListener, KeyListener {
 
     JButton btnAgregar, btnRestablecerAltas, btnCancelarAltas;
-    JTextField cajaNumVehiculoAltas, cajaModeloAltas, cajaPesoAltas, cajaPrecioListaAltas;
+    JTextField cajaNumVehiculoAltas, cajaModeloAltas, cajaPrecioListaAltas;
     JSpinner numCilindrosAltas, capacidadAltas;
     JComboBox<Integer> cbNumPuertasAltas, cbDiaAltas, cbAñoAltas;
-    JComboBox<String> cbPaisFabAltas, cbMesAltas, cbColorAltas;
+    JComboBox<String> cbPaisFabAltas, cbMesAltas, cbColorAltas, cbPesoAltas;
     JTable tablaVehiculosAltas;
 
     ImageIcon logoIcon, inicioIcon, personalIcon, encargadoIcon, telefonoIcon, correoIcon, autoIcon, configIcon, registrosIcon;
@@ -66,6 +69,7 @@ public class VentanaAltas extends JInternalFrame implements ActionListener {
         btnInicio.setForeground(Color.WHITE);
         btnInicio.setFocusPainted(false);
         agregarComponentePanel(panelDerechoAltas, btnInicio, 15, 220, 130, 30);
+        btnInicio.addActionListener(this);
 
 
         personalIcon = new ImageIcon("img/personal.png");
@@ -140,6 +144,7 @@ public class VentanaAltas extends JInternalFrame implements ActionListener {
         btnRegistrosAltas.setForeground(Color.WHITE);
         btnRegistrosAltas.setFocusPainted(false);
         agregarComponentePanel(panelDerechoAltas, btnRegistrosAltas, 15, 520, 130, 30);
+        btnRegistrosAltas.addActionListener(this);
 
         JLabel txtAltas = new JLabel("ALTAS VEHICULOS");
         txtAltas.setFont(new Font("Roboto", Font.BOLD, 15));
@@ -151,12 +156,14 @@ public class VentanaAltas extends JInternalFrame implements ActionListener {
 
         cajaNumVehiculoAltas = new JTextField();
         agregarAInternal(cajaNumVehiculoAltas,135, 83,150,25);
+        cajaNumVehiculoAltas.addKeyListener(this);
 
         JLabel txtModeloAltas = new JLabel("Modelo:");
         agregarAInternal(txtModeloAltas,10,110,120,20);
 
         cajaModeloAltas = new JTextField();
         agregarAInternal(cajaModeloAltas,135,113,150,25);
+        cajaModeloAltas.addKeyListener(this);
 
         JLabel txtPaisFabAltas = new JLabel("Pais de Fabricacion");
         agregarAInternal(txtPaisFabAltas,10,150,120,20);
@@ -185,7 +192,7 @@ public class VentanaAltas extends JInternalFrame implements ActionListener {
         agregarAInternal(cbDiaAltas, 160, 180, 50, 25);
 
         String[] mesesAltas = {
-                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                "Elige mes..", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
         };
         cbMesAltas = new JComboBox<>(mesesAltas);
@@ -193,6 +200,7 @@ public class VentanaAltas extends JInternalFrame implements ActionListener {
 
 
         cbAñoAltas = new JComboBox<>();
+        cbAñoAltas.addItem(0);
         for (int a = 1900; a <= 2025; a++) {
             cbAñoAltas.addItem(a);
         }
@@ -204,6 +212,7 @@ public class VentanaAltas extends JInternalFrame implements ActionListener {
 
         cajaPrecioListaAltas = new JTextField();
         agregarAInternal(cajaPrecioListaAltas, 135, 213, 150, 25);
+        cajaPrecioListaAltas.addKeyListener(this);
 
 
         JLabel txtCilindrosAltas = new JLabel("Cilindros:");
@@ -234,8 +243,18 @@ public class VentanaAltas extends JInternalFrame implements ActionListener {
         JLabel txtPesoAltas = new JLabel("Peso:");
         agregarAInternal(txtPesoAltas,10,330,80,20);
 
-        cajaPesoAltas = new JTextField();
-        agregarAInternal(cajaPesoAltas,135,333,150,25);
+        String[] pesos = {
+                "Elije peso..", "800 kg", "900 kg", "1000 kg",
+                "1100 kg", "1200 kg", "1300 kg",
+                "1400 kg", "1500 kg", "1600 kg",
+                "1700 kg", "1800 kg", "1900 kg",
+                "2000 kg", "2200 kg", "2400 kg",
+                "2600 kg", "2800 kg", "3000 kg"
+        };
+
+        cbPesoAltas = new JComboBox<>(pesos);
+        agregarAInternal(cbPesoAltas,135,333,120,25);
+
 
         JLabel txtColorAltas = new JLabel("Color:");
         agregarAInternal(txtColorAltas, 10, 300, 120, 20);
@@ -336,7 +355,7 @@ public class VentanaAltas extends JInternalFrame implements ActionListener {
 
         cajaNumVehiculoAltas.setText("");
         cajaModeloAltas.setText("");
-        cajaPesoAltas.setText("");
+        cbPesoAltas.setSelectedIndex(0);
         cajaPrecioListaAltas.setText("");
         numCilindrosAltas.setValue("0");
         capacidadAltas.setValue("0");
@@ -361,6 +380,7 @@ public class VentanaAltas extends JInternalFrame implements ActionListener {
 
         Object componente = e.getSource();
 
+
         if (componente == btnAgregar){
 
             String dia = cbDiaAltas.getSelectedItem().toString();
@@ -382,7 +402,7 @@ public class VentanaAltas extends JInternalFrame implements ActionListener {
                     numCilindrosAltas.getValue().toString(),
                     Byte.parseByte(cbNumPuertasAltas.getSelectedItem().toString()),
                     cbColorAltas.getSelectedItem().toString(),
-                    cajaPesoAltas.getText(),
+                    cbPesoAltas.getSelectedItem().toString(),
                     capacidadAltas.getValue().toString());
 
 
@@ -416,6 +436,51 @@ public class VentanaAltas extends JInternalFrame implements ActionListener {
                 //this.dispose();
                 this.setVisible(false);
             }
+        } else if (componente == btnRegistrosAltas) {
+            refrescarTabla();
+        } else if (componente == btnInicio) {
+            refrescarTabla();
+            limpiarVentana();
+            this.setVisible(false);
+
         }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        char c = e.getKeyChar();
+        int valorCaracter = (int) c;
+
+        Object componente = e.getSource();
+
+        if (componente == cajaNumVehiculoAltas || componente == cajaPrecioListaAltas) {
+
+            if (valorCaracter == KeyEvent.VK_BACK_SPACE || valorCaracter == KeyEvent.VK_DELETE){
+                return;
+            }
+            if (valorCaracter < 48 || valorCaracter > 57){
+                e.consume();
+                Toolkit.getDefaultToolkit().beep();
+                JOptionPane.showMessageDialog(this, "Solo debes ingresar Numeros!");
+
+            }
+        } else {
+
+            if (!Character.isLetter(c) && c != ' ' && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE) {
+                e.consume();
+                Toolkit.getDefaultToolkit().beep();
+                JOptionPane.showMessageDialog(this, "Solo debes ingresar letras!");
+            }
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }
