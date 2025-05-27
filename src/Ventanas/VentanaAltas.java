@@ -31,6 +31,7 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
     JSpinner numCilindrosAltas, capacidadAltas;
     JComboBox<Integer> cbNumPuertasAltas, cbDiaAltas, cbAñoAltas;
     JComboBox<String> cbPaisFabAltas, cbMesAltas, cbColorAltas, cbPesoAltas;
+    JScrollPane scrollTablaAltas;
     JTable tablaVehiculosAltas;
 
     ImageIcon logoIcon, inicioIcon, personalIcon, encargadoIcon, telefonoIcon, correoIcon, autoIcon, configIcon, registrosIcon;
@@ -283,7 +284,8 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
         tablaVehiculosAltas.setRowHeight(20);
         tablaVehiculosAltas.setPreferredScrollableViewportSize(new Dimension(660, 150));
 
-        JScrollPane scrollTablaAltas = new JScrollPane(tablaVehiculosAltas);
+        scrollTablaAltas = new JScrollPane(tablaVehiculosAltas);
+        scrollTablaAltas.setVisible(false);
         agregarAInternal(scrollTablaAltas,10, 410, 640, 150);
 
 
@@ -383,6 +385,11 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
 
 
         if (componente == btnAgregar){
+
+            if (vehiculoDAO.existeVehiculo(cajaNumVehiculoAltas.getText())) {
+                JOptionPane.showMessageDialog(this, "Ya existe un vehículo con ese número. Ingresa otro.");
+                return;
+            }
             try {
             if (cajaNumVehiculoAltas.getText().length() > 10){
                 JOptionPane.showMessageDialog(this,"Excediste el maximo valor del campo 'Numero Vehiculo', verifica los datos");
@@ -504,6 +511,15 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
             }
         } else if (componente == btnRegistrosAltas) {
             refrescarTabla();
+            boolean visible = scrollTablaAltas.isVisible();
+            scrollTablaAltas.setVisible(!visible);
+
+            // Cambiar el texto del botón también
+            btnRegistrosAltas.setText(visible ? "Mostrar Registros" : "Ocultar Registros");
+
+            // Actualizar la interfaz gráfica
+            scrollTablaAltas.getParent().revalidate();
+            scrollTablaAltas.getParent().repaint();
         } else if (componente == btnInicio) {
             refrescarTabla();
             limpiarVentana();

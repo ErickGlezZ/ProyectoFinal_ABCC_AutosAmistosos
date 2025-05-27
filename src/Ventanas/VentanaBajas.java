@@ -25,6 +25,7 @@ public class VentanaBajas extends JInternalFrame implements ActionListener, KeyL
     JSpinner numCilindrosBajas, capacidadBajas;
     JComboBox<Integer> cbNumPuertasBajas, cbDiaBajas, cbAñoBajas;
     JComboBox<String> cbPaisFabBajas, cbMesBajas, cbColorBajas, cbPesoBajas;
+    JScrollPane scrollTablaBajas;
     JTable tablaVehiculosBajas;
 
     ImageIcon logoIcon, inicioIcon, personalIcon, encargadoIcon, telefonoIcon, correoIcon, autoIcon, configIcon, registrosIcon;
@@ -279,7 +280,8 @@ public class VentanaBajas extends JInternalFrame implements ActionListener, KeyL
         tablaVehiculosBajas.setRowHeight(20);
         tablaVehiculosBajas.setPreferredScrollableViewportSize(new Dimension(660, 150));
 
-        JScrollPane scrollTablaBajas = new JScrollPane(tablaVehiculosBajas);
+        scrollTablaBajas = new JScrollPane(tablaVehiculosBajas);
+        scrollTablaBajas.setVisible(false);
         agregarAInternal(scrollTablaBajas,10, 410, 640, 150);
 
         btnBuscarBajas = new JButton("Buscar");
@@ -356,6 +358,10 @@ public class VentanaBajas extends JInternalFrame implements ActionListener, KeyL
                     capacidadBajas.setValue(rs.getString("Cap_Personas"));
 
 
+            } else {
+
+                JOptionPane.showMessageDialog(null, "No se encontró un vehículo con ese número.");
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -431,6 +437,15 @@ public class VentanaBajas extends JInternalFrame implements ActionListener, KeyL
             }
         } else if (componente == btnRegistrosBajas) {
             refrescarTabla();
+            boolean visible = scrollTablaBajas.isVisible();
+            scrollTablaBajas.setVisible(!visible);
+
+
+            btnRegistrosBajas.setText(visible ? "Mostrar tabla" : "Ocultar tabla");
+
+
+            scrollTablaBajas.getParent().revalidate();
+            scrollTablaBajas.getParent().repaint();
         } else if (componente == btnInicio) {
             refrescarTabla();
             limpiarVentana();

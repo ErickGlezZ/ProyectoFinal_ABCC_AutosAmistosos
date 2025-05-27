@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -25,6 +26,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
     JSpinner numCilindrosConsultas, capacidadConsultas;
     JComboBox<Integer> cbNumPuertasConsultas;
     JComboBox<String> cbPaisFabConsultas, cbColorConsultas, cbPesoConsultas;
+    JScrollPane scrollTablaConsultas;
     JTable  tablaVehiculosConsultas;
     ButtonGroup rbGroup;
     JRadioButton rbTodos, rbModelo, rbPaisFab, rbFechaFab, rbPrecioLista, rbCilindros, rbNumPuertas, rbColor, rbPeso, rbCapacidad;
@@ -275,7 +277,8 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
         tablaVehiculosConsultas.setRowHeight(20);
         tablaVehiculosConsultas.setPreferredScrollableViewportSize(new Dimension(660, 150));
 
-        JScrollPane scrollTablaConsultas = new JScrollPane(tablaVehiculosConsultas);
+        scrollTablaConsultas = new JScrollPane(tablaVehiculosConsultas);
+        scrollTablaConsultas.setVisible(false);
         agregarAInternal(scrollTablaConsultas,10, 410, 640, 150);
 
         btnBuscarConsultas = new JButton("Buscar");
@@ -381,15 +384,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
                     return;
                 }
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                try {
-                    LocalDate localDate = LocalDate.parse(cajaFechaFabConsultas.getText(), formatter);
-                    java.sql.Date fechaSQL = java.sql.Date.valueOf(localDate);
+                LocalDate localDate = LocalDate.parse(cajaFechaFabConsultas.getText(), formatter);
+                java.sql.Date fechaSQL = java.sql.Date.valueOf(localDate);
+                modelo = vehiculoDAO.obtenerVehiculosFiltrados("Fecha_Fab", fechaSQL);
 
-                    modelo = vehiculoDAO.obtenerVehiculosFiltrados("Fecha_Fab", fechaSQL);
-                } catch (DateTimeParseException e) {
-                    JOptionPane.showMessageDialog(null, "La fecha ingresada no tiene el formato correcto (dd/MM/yyyy).");
-                    return;
-                }
 
             } else if (rbPrecioLista.isSelected()) {
                 modelo = vehiculoDAO.obtenerVehiculosFiltrados("Precio_Lista", cajaPrecioListaConsultas.getText());
@@ -407,6 +405,11 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
                 modelo = vehiculoDAO.obtenerVehiculos();
             }
             tabla.setModel(modelo);
+
+            if (modelo.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "No se encontraron registros con ese valor.");
+                return;
+            }
 
             int columnaFecha = 3;
             tabla.getColumnModel().getColumn(columnaFecha).setCellRenderer(new DefaultTableCellRenderer() {
@@ -511,7 +514,12 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
         }
     }
 
-
+    public boolean algunaOpcionSeleccionada() {
+        return rbTodos.isSelected() || rbModelo.isSelected() || rbPaisFab.isSelected() ||
+                rbFechaFab.isSelected() || rbPrecioLista.isSelected() || rbCilindros.isSelected() ||
+                rbNumPuertas.isSelected() || rbColor.isSelected() || rbPeso.isSelected() ||
+                rbCapacidad.isSelected();
+    }
 
 
 
@@ -538,9 +546,88 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         Object componente = e.getSource();
 
-        if (componente == btnBuscarConsultas){
-            actualizarTablaFiltro(tablaVehiculosConsultas);
+        if (componente == btnBuscarConsultas) {
+            try {
+                if (!algunaOpcionSeleccionada()) {
+                    JOptionPane.showMessageDialog(this, "¡Selecciona alguna opción de búsqueda!");
+                    return;
+                }
 
+                if (rbModelo.isSelected()) {
+                    String modelo = cajaModeloConsultas.getText();
+                    if (modelo.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Asegúrate de llenar el campo 'Modelo'");
+                        return;
+                    }
+                    if (modelo.length() > 15) {
+                        JOptionPane.showMessageDialog(this, "El campo 'Modelo' no debe exceder los 15 caracteres");
+                        return;
+                    }
+                }
+
+                if (rbPrecioLista.isSelected()) {
+                    String precioTexto = cajaPrecioListaConsultas.getText();
+                    if (precioTexto.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Asegúrate de llenar el campo 'Precio Lista'");
+                        return;
+                    }
+                    double precio = Double.parseDouble(precioTexto);
+                    if (precio >= 1_000_000_000) {
+                        JOptionPane.showMessageDialog(this, "El precio debe ser menor a 1,000,000,000");
+                        return;
+                    }
+                }
+
+                if (rbFechaFab.isSelected()) {
+                    String fechaTexto = cajaFechaFabConsultas.getText();
+                    if (fechaTexto.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Asegúrate de llenar el campo 'Fecha Fabricación'");
+                        return;
+                    }
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    LocalDate.parse(fechaTexto, formatter);
+                }
+                int cilindros = Integer.parseInt(numCilindrosConsultas.getValue().toString());
+                if (rbCilindros.isSelected() && cilindros == 0) {
+                    JOptionPane.showMessageDialog(this, "El número de cilindros debe ser mayor que cero.");
+                    return;
+                }
+
+                if (rbNumPuertas.isSelected()) {
+                    String puertas = cbNumPuertasConsultas.getSelectedItem().toString();
+                    if (puertas.equals("0")) {
+                        JOptionPane.showMessageDialog(this, "Selecciona una cantidad válida de puertas.");
+                        return;
+                    }
+                }
+
+                if (rbPaisFab.isSelected() && cbPaisFabConsultas.getSelectedItem().toString().equals("Elige un pais..")) {
+                    JOptionPane.showMessageDialog(this, "Selecciona un país válido.");
+                    return;
+                }
+
+                if (rbPeso.isSelected() && cbPesoConsultas.getSelectedItem().toString().equals("Elije peso..")) {
+                    JOptionPane.showMessageDialog(this, "Selecciona un peso del Vehículo válido.");
+                    return;
+                }
+
+                if (rbColor.isSelected() && cbColorConsultas.getSelectedItem().toString().equals("Elige color..")) {
+                    JOptionPane.showMessageDialog(this, "Selecciona un color válido.");
+                    return;
+                }
+                int capacidad = Integer.parseInt(capacidadConsultas.getValue().toString());
+                if (rbCapacidad.isSelected() && capacidad == 0) {
+                    JOptionPane.showMessageDialog(this, "Selecciona una capacidad de personas válida.");
+                    return;
+                }
+
+                actualizarTablaFiltro(tablaVehiculosConsultas);
+
+            } catch (DateTimeParseException ex) {
+                JOptionPane.showMessageDialog(this, "La fecha ingresada no tiene el formato correcto (dd/MM/yyyy).");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Asegúrate de ingresar datos numéricos válidos.");
+            }
         } else if (componente == btnRestablecerConsultas) {
             if (cajaIndice.getText().equals("0")){
                 JOptionPane.showMessageDialog(this,"No hay datos para borrar");
@@ -575,7 +662,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(false);
 
-            actualizarTablaFiltro(tablaVehiculosConsultas);
+
 
         } else if (componente == rbModelo) {
             cajaModeloConsultas.setEnabled(true);
@@ -587,7 +674,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             cbColorConsultas.setEnabled(false);
             cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(false);
-            actualizarTablaFiltro(tablaVehiculosConsultas);
+
 
         } else if (componente == rbPaisFab) {
             cajaModeloConsultas.setEnabled(false);
@@ -599,7 +686,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             cbColorConsultas.setEnabled(false);
             cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(false);
-            actualizarTablaFiltro(tablaVehiculosConsultas);
+
 
         } else if (componente == rbFechaFab) {
             cajaModeloConsultas.setEnabled(false);
@@ -611,7 +698,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             cbColorConsultas.setEnabled(false);
             cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(false);
-            actualizarTablaFiltro(tablaVehiculosConsultas);
+
 
         } else if (componente == rbPrecioLista) {
             cajaModeloConsultas.setEnabled(false);
@@ -623,7 +710,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             cbColorConsultas.setEnabled(false);
             cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(false);
-            actualizarTablaFiltro(tablaVehiculosConsultas);
+
 
         } else if (componente == rbCilindros) {
             cajaModeloConsultas.setEnabled(false);
@@ -635,7 +722,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             cbColorConsultas.setEnabled(false);
             cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(false);
-            actualizarTablaFiltro(tablaVehiculosConsultas);
+
 
         } else if (componente == rbNumPuertas) {
             cajaModeloConsultas.setEnabled(false);
@@ -647,7 +734,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             cbColorConsultas.setEnabled(false);
             cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(false);
-            actualizarTablaFiltro(tablaVehiculosConsultas);
+
 
         } else if (componente == rbColor) {
             cajaModeloConsultas.setEnabled(false);
@@ -659,7 +746,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             cbColorConsultas.setEnabled(true);
             cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(false);
-            actualizarTablaFiltro(tablaVehiculosConsultas);
+
 
         } else if (componente == rbPeso) {
             cajaModeloConsultas.setEnabled(false);
@@ -671,7 +758,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             cbColorConsultas.setEnabled(false);
             cbPesoConsultas.setEnabled(true);
             capacidadConsultas.setEnabled(false);
-            actualizarTablaFiltro(tablaVehiculosConsultas);
+
 
         } else if (componente == rbCapacidad) {
             cajaModeloConsultas.setEnabled(false);
@@ -683,7 +770,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             cbColorConsultas.setEnabled(false);
             cbPesoConsultas.setEnabled(false);
             capacidadConsultas.setEnabled(true);
-             actualizarTablaFiltro(tablaVehiculosConsultas);
+
 
         } else if (componente == btnPrimerReg) {
 
@@ -711,6 +798,17 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             refrescarTabla();
             limpiarVentana();
             this.setVisible(false);
+        } else if (componente == btnRegistrosConsultas) {
+            refrescarTabla();
+            boolean visible = scrollTablaConsultas.isVisible();
+            scrollTablaConsultas.setVisible(!visible);
+
+
+            btnRegistrosConsultas.setText(visible ? "Mostrar tabla" : "Ocultar tabla");
+
+
+            scrollTablaConsultas.getParent().revalidate();
+            scrollTablaConsultas.getParent().repaint();
         }
         listaVehiculos = añadirVehiculos();
     }

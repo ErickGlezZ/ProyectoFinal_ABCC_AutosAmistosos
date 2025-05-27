@@ -25,6 +25,7 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
     JSpinner numCilindrosCambios, capacidadCambios;
     JComboBox<Integer> cbNumPuertasCambios, cbDiaCambios, cbAñoCambios;
     JComboBox<String> cbPaisFabCambios, cbMesCambios, cbColorCambios, cbPesoCambios;
+    JScrollPane scrollTablaCambios;
     JTable  tablaVehiculosCambios;
 
     ImageIcon logoIcon, inicioIcon, personalIcon, encargadoIcon, telefonoIcon, correoIcon, autoIcon, configIcon, registrosIcon;
@@ -269,7 +270,8 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
         tablaVehiculosCambios.setRowHeight(20);
         tablaVehiculosCambios.setPreferredScrollableViewportSize(new Dimension(660, 150));
 
-        JScrollPane scrollTablaCambios = new JScrollPane(tablaVehiculosCambios);
+        scrollTablaCambios = new JScrollPane(tablaVehiculosCambios);
+        scrollTablaCambios.setVisible(false);
         agregarAInternal(scrollTablaCambios,10, 410, 640, 150);
 
         btnBuscarCambios = new JButton("Buscar");
@@ -337,6 +339,20 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
 
     }
 
+    public void habilitarCamposEdicion(boolean habilitar) {
+        cajaModeloCambios.setEnabled(habilitar);
+        cbPaisFabCambios.setEnabled(habilitar);
+        cbDiaCambios.setEnabled(habilitar);
+        cbMesCambios.setEnabled(habilitar);
+        cbAñoCambios.setEnabled(habilitar);
+        cajaPrecioListaCambios.setEnabled(habilitar);
+        numCilindrosCambios.setEnabled(habilitar);
+        cbNumPuertasCambios.setEnabled(habilitar);
+        cbColorCambios.setEnabled(habilitar);
+        cbPesoCambios.setEnabled(habilitar);
+        capacidadCambios.setEnabled(habilitar);
+    }
+
     public void obtenerDatosVehiculo() {
 
         String sql = "SELECT * FROM Vehiculos WHERE Num_Vehiculo = ?";
@@ -365,6 +381,12 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
                 capacidadCambios.setValue(rs.getString("Cap_Personas"));
 
 
+                habilitarCamposEdicion(true);
+
+            } else {
+
+                JOptionPane.showMessageDialog(null, "No se encontró un vehículo con ese número.");
+                habilitarCamposEdicion(false);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -418,17 +440,6 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
             if (cajaNumVehiculoCambios.getText().isEmpty()){
                 JOptionPane.showMessageDialog(this,"Campo vacio, verifica campo 'Numero Vehiculo'");
             } else {
-                cajaModeloCambios.setEnabled(true);
-                cbPaisFabCambios.setEnabled(true);
-                cbDiaCambios.setEnabled(true);
-                cbMesCambios.setEnabled(true);
-                cbAñoCambios.setEnabled(true);
-                cajaPrecioListaCambios.setEnabled(true);
-                numCilindrosCambios.setEnabled(true);
-                cbNumPuertasCambios.setEnabled(true);
-                cbColorCambios.setEnabled(true);
-                cbPesoCambios.setEnabled(true);
-                capacidadCambios.setEnabled(true);
 
                 obtenerDatosVehiculo();
             }
@@ -537,7 +548,7 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
 
 
         } else if (componente == btnRestablecerCambios) {
-
+            habilitarCamposEdicion(false);
             if (cajaNumVehiculoCambios.getText().isEmpty()){
                 JOptionPane.showMessageDialog(this,"No hay datos para borrar");
             }
@@ -557,6 +568,16 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
             }
         } else if (componente == btnRegistrosCambios) {
             refrescarTabla();
+            boolean visible = scrollTablaCambios.isVisible();
+            scrollTablaCambios.setVisible(!visible);
+
+
+            btnRegistrosCambios.setText(visible ? "Mostrar tabla" : "Ocultar tabla");
+
+
+            scrollTablaCambios.getParent().revalidate();
+            scrollTablaCambios.getParent().repaint();
+
         } else if (componente == btnInicio) {
             refrescarTabla();
             limpiarVentana();

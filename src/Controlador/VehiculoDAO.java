@@ -6,6 +6,7 @@ import Modelo.Vehiculo;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -40,6 +41,10 @@ public class VehiculoDAO {
             ResultSetTableModel modelo = new ResultSetTableModel(CONTROLADOR_JDBC, URL, CONSULTA);
             tabla.setModel(modelo);
 
+            if (modelo.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(null,"No se encontraron registros con ese valor.");
+                return;
+            }
 
             int columnaFecha = 3;
             tabla.getColumnModel().getColumn(columnaFecha).setCellRenderer(new DefaultTableCellRenderer() {
@@ -79,6 +84,18 @@ public class VehiculoDAO {
                 vehiculo.getPeso(),
                 vehiculo.getCapacidadPersonas());
     }
+
+    public boolean existeVehiculo(String numVehiculo) {
+        String sql = "SELECT Num_Vehiculo FROM Vehiculos WHERE Num_Vehiculo = ?";
+        ResultSet rs = conexionBD.ejecutarConsultaSQL(sql, numVehiculo);
+        try {
+            return rs != null && rs.next(); // Ya existe
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     //===================BAJAS=====================
     public boolean eliminarVehiculo(String numVehiculo){
