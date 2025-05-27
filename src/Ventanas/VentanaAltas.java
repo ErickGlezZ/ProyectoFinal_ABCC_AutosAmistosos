@@ -388,6 +388,12 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
                 JOptionPane.showMessageDialog(this,"Excediste el maximo valor del campo 'Numero Vehiculo', verifica los datos");
                 return;
             }
+
+            if (cajaNumVehiculoAltas.getText().isEmpty()){
+                JOptionPane.showMessageDialog(this,"Asegurate de llenar TODOS los campos correctamente!");
+                return;
+            }
+
             if (cajaModeloAltas.getText().length() > 15){
                 JOptionPane.showMessageDialog(this,"Excediste el maximo valor del campo 'Modelo', verifica los datos");
                 return;
@@ -412,6 +418,11 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
             byte puertas =  Byte.parseByte(cbNumPuertasAltas.getSelectedItem().toString());
             if (puertas == 0){
                 JOptionPane.showMessageDialog(this, "Selecciona una cantidad válida de puertas.");
+                return;
+            }
+
+            if (cbPaisFabAltas.getSelectedItem().toString().equals("Elige un pais..")){
+                JOptionPane.showMessageDialog(this, "Selecciona un país válido.");
                 return;
             }
 

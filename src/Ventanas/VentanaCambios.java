@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -414,7 +415,9 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
 
         if (componente == btnBuscarCambios){
 
-            try{
+            if (cajaNumVehiculoCambios.getText().isEmpty()){
+                JOptionPane.showMessageDialog(this,"Campo vacio, verifica campo 'Numero Vehiculo'");
+            } else {
                 cajaModeloCambios.setEnabled(true);
                 cbPaisFabCambios.setEnabled(true);
                 cbDiaCambios.setEnabled(true);
@@ -428,13 +431,70 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
                 capacidadCambios.setEnabled(true);
 
                 obtenerDatosVehiculo();
-
-            } catch (RuntimeException ex) {
-                JOptionPane.showMessageDialog(this,"Campo vacio, verifica los datos");
             }
+
+
+
+
+
         } else if (componente == btnGuardarCambios) {
 
             try {
+                if (cajaNumVehiculoCambios.getText().length() > 10){
+                    JOptionPane.showMessageDialog(this,"Excediste el maximo valor del campo 'Numero Vehiculo', verifica los datos");
+                    return;
+                }
+                if (cajaNumVehiculoCambios.getText().isEmpty()){
+                    JOptionPane.showMessageDialog(this,"Asegurate de llenar TODOS los campos correctamente!");
+                    return;
+                }
+                if (cajaModeloCambios.getText().length() > 15){
+                    JOptionPane.showMessageDialog(this,"Excediste el maximo valor del campo 'Modelo', verifica los datos");
+                    return;
+                }
+                if (cajaModeloCambios.getText().isEmpty()){
+                    JOptionPane.showMessageDialog(this,"Asegurate de llenar el campo modelo");
+                    return;
+                }
+
+                double precio = Double.parseDouble(cajaPrecioListaCambios.getText());
+                if (precio < 0 || precio >= 1000000000) {
+                    JOptionPane.showMessageDialog(this, "El precio debe menor a 1,000,000,000.");
+                    return;
+                }
+
+                int cilindros = Integer.parseInt(numCilindrosCambios.getValue().toString());
+                if (cilindros == 0){
+                    JOptionPane.showMessageDialog(this, "El número de cilindros debe ser mayor que cero.");
+                    return;
+                }
+
+                byte puertas =  Byte.parseByte(cbNumPuertasCambios.getSelectedItem().toString());
+                if (puertas == 0){
+                    JOptionPane.showMessageDialog(this, "Selecciona una cantidad válida de puertas.");
+                    return;
+                }
+
+                if (cbPaisFabCambios.getSelectedItem().toString().equals("Elige un pais..")){
+                    JOptionPane.showMessageDialog(this, "Selecciona un país válido.");
+                    return;
+                }
+
+                if (cbPesoCambios.getSelectedItem().toString().equals("Elije peso..")){
+                    JOptionPane.showMessageDialog(this, "Selecciona un peso del Vehiculo válido.");
+                    return;
+                }
+
+                if (cbColorCambios.getSelectedItem().toString().equals("Elige color..")){
+                    JOptionPane.showMessageDialog(this, "Selecciona un color válido.");
+                    return;
+                }
+
+                int capacidad = Integer.parseInt(capacidadCambios.getValue().toString());
+                if (capacidad == 0){
+                    JOptionPane.showMessageDialog(this, "Selecciona una capacidad de personas valida.");
+                    return;
+                }
 
                 String dia = cbDiaCambios.getSelectedItem().toString();
                 String mes = cbMesCambios.getSelectedItem().toString();
@@ -458,21 +518,6 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
                         cbPesoCambios.getSelectedItem().toString(),
                         capacidadCambios.getValue().toString());
 
-                if (cajaNumVehiculoCambios.getText().isEmpty() || cajaModeloCambios.getText().isEmpty() || cajaPrecioListaCambios.getText().isEmpty()){
-                    JOptionPane.showMessageDialog(this, "Error, Debes llenar todos los campos.");
-                }
-                if (cbPaisFabCambios.getSelectedIndex() == 0 || cbPesoCambios.getSelectedIndex() == 0 || cbColorCambios.getSelectedIndex() == 0 || cbNumPuertasCambios.getSelectedIndex() == 0 || cbDiaCambios.getSelectedIndex() == 0 || cbMesCambios.getSelectedIndex() == 0 || cbAñoCambios.getSelectedIndex() == 0){
-                    JOptionPane.showMessageDialog(this,"Error selecciona alguna opcion en los comboBox");
-                }
-
-                int cilindros = Integer.parseInt(numCilindrosCambios.getValue().toString());
-                int capacidad = Integer.parseInt(capacidadCambios.getValue().toString());
-
-                if (cilindros == 0 || capacidad == 0) {
-                    JOptionPane.showMessageDialog(this, "Error, selecciona un número válido en los spinners.");
-                    return;
-                }
-
 
 
                 if (vehiculoDAO.editarVehiculo(v)){
@@ -483,12 +528,10 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
                 } else {
                     JOptionPane.showMessageDialog(this,"ERROR, al editar registro");
                 }
-            } catch (NumberFormatException e2) {
-                JOptionPane.showMessageDialog(this, "ERROR. Asegúrate de ingresar datos correctos");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado:\n" + ex.getMessage());
-
+            } catch (DateTimeException e1){
+                JOptionPane.showMessageDialog(this,"Seleccionaste un valor equivocado en alguno de los campos de la FECHA, Verifica los datos");
+            } catch (NumberFormatException e1){
+                JOptionPane.showMessageDialog(this,"Asegurate de llenar TODOS los campos correctamente!");
             }
 
 

@@ -9,6 +9,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.NumberFormat;
@@ -16,7 +18,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-public class VentanaBajas extends JInternalFrame implements ActionListener {
+public class VentanaBajas extends JInternalFrame implements ActionListener, KeyListener {
 
     JButton  btnEliminar, btnRestablecerBajas, btnCancelarBajas, btnBuscarBajas, btnInicio, btnRegistrosBajas;
     JTextField cajaNumVehiculoBajas, cajaModeloBajas, cajaPrecioListaBajas;
@@ -388,6 +390,10 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
         Object componente = e.getSource();
         
         if (componente == btnBuscarBajas){
+
+            if (cajaNumVehiculoBajas.getText().isEmpty()){
+                JOptionPane.showMessageDialog(this,"Campo vacio, verifica el campo 'Numero Vehiculo'");
+            }
             try {
                 obtenerDatosVehiculo();
             } catch (RuntimeException ex) {
@@ -430,5 +436,35 @@ public class VentanaBajas extends JInternalFrame implements ActionListener {
             limpiarVentana();
             this.setVisible(false);
         }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        char c = e.getKeyChar();
+        int valorCaracter = (int) c;
+
+        Object componente = e.getSource();
+
+        if (componente == cajaNumVehiculoBajas) {
+
+            if (valorCaracter == KeyEvent.VK_BACK_SPACE || valorCaracter == KeyEvent.VK_DELETE){
+                return;
+            }
+            if (valorCaracter < 48 || valorCaracter > 57){
+                e.consume();
+                Toolkit.getDefaultToolkit().beep();
+                JOptionPane.showMessageDialog(this, "Solo debes ingresar Numeros!");
+            }
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }
