@@ -32,8 +32,8 @@ public class VehiculoDAO {
 
 
     public void actualizarTabla(JTable tabla){
-        final String CONTROLADOR_JDBC = "com.mysql.cj.jdbc.Driver";
-        final String URL = "jdbc:mysql://localhost:3306/BD_Autos_Amistosos";
+        final String CONTROLADOR_JDBC = conexionBD.getDriver();
+        final String URL = conexionBD.getURL();
         final String CONSULTA = "SELECT * FROM vehiculos";
 
         try {

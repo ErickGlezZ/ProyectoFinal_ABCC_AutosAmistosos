@@ -16,6 +16,7 @@ import java.awt.event.KeyListener;
 import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -382,42 +383,96 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
 
 
         if (componente == btnAgregar){
-
-            String dia = cbDiaAltas.getSelectedItem().toString();
-            String mes = cbMesAltas.getSelectedItem().toString();
-            String año = cbAñoAltas.getSelectedItem().toString();
-
-            int numMes = obtenerNumeroMes(mes);
-
-            LocalDate fecha = LocalDate.of(Integer.parseInt(año), numMes, Integer.parseInt(dia));
-            Date fechaSQL = java.sql.Date.valueOf(fecha);
-
-
-            Vehiculo v = new Vehiculo(
-                    cajaNumVehiculoAltas.getText(),
-                    cajaModeloAltas.getText(),
-                    cbPaisFabAltas.getSelectedItem().toString(),
-                    fechaSQL,
-                    cajaPrecioListaAltas.getText(),
-                    numCilindrosAltas.getValue().toString(),
-                    Byte.parseByte(cbNumPuertasAltas.getSelectedItem().toString()),
-                    cbColorAltas.getSelectedItem().toString(),
-                    cbPesoAltas.getSelectedItem().toString(),
-                    capacidadAltas.getValue().toString());
-
-
-            if (vehiculoDAO.agregarVehiculo(v)){
-                JOptionPane.showMessageDialog(this,"Registro Agregado CORRECTAMENTE");
-                System.out.println("Registro Agregado CORRECTAMENTE");
-                System.out.println("ejecutando");
-
-
-                vehiculoDAO.actualizarTabla(tablaVehiculosAltas);
-
-            } else{
-                JOptionPane.showMessageDialog(this,"Error en la insercion");
-                System.out.println("ERROR en la insercion");
+            try {
+            if (cajaNumVehiculoAltas.getText().length() > 10){
+                JOptionPane.showMessageDialog(this,"Excediste el maximo valor del campo 'Numero Vehiculo', verifica los datos");
+                return;
             }
+            if (cajaModeloAltas.getText().length() > 15){
+                JOptionPane.showMessageDialog(this,"Excediste el maximo valor del campo 'Modelo', verifica los datos");
+                return;
+            }
+            if (cajaModeloAltas.getText().isEmpty()){
+                JOptionPane.showMessageDialog(this,"Asegurate de llenar el campo modelo");
+                return;
+            }
+
+            double precio = Double.parseDouble(cajaPrecioListaAltas.getText());
+            if (precio < 0 || precio >= 1000000000) {
+                JOptionPane.showMessageDialog(this, "El precio debe menor a 1,000,000,000.");
+                return;
+            }
+
+            int cilindros = Integer.parseInt(numCilindrosAltas.getValue().toString());
+            if (cilindros == 0){
+                JOptionPane.showMessageDialog(this, "El número de cilindros debe ser mayor que cero.");
+                return;
+            }
+
+            byte puertas =  Byte.parseByte(cbNumPuertasAltas.getSelectedItem().toString());
+            if (puertas == 0){
+                JOptionPane.showMessageDialog(this, "Selecciona una cantidad válida de puertas.");
+                return;
+            }
+
+            if (cbPesoAltas.getSelectedItem().toString().equals("Elije peso..")){
+                JOptionPane.showMessageDialog(this, "Selecciona un peso del Vehiculo válido.");
+                return;
+            }
+
+            if (cbColorAltas.getSelectedItem().toString().equals("Elige color..")){
+                JOptionPane.showMessageDialog(this, "Selecciona un color válido.");
+                return;
+            }
+
+            int capacidad = Integer.parseInt(capacidadAltas.getValue().toString());
+            if (capacidad == 0){
+                JOptionPane.showMessageDialog(this, "Selecciona una capacidad de personas valida.");
+                return;
+            }
+
+
+                String dia = cbDiaAltas.getSelectedItem().toString();
+                String mes = cbMesAltas.getSelectedItem().toString();
+                String año = cbAñoAltas.getSelectedItem().toString();
+
+                int numMes = obtenerNumeroMes(mes);
+
+                LocalDate fecha = LocalDate.of(Integer.parseInt(año), numMes, Integer.parseInt(dia));
+                Date fechaSQL = java.sql.Date.valueOf(fecha);
+
+
+                Vehiculo v = new Vehiculo(
+                        cajaNumVehiculoAltas.getText(),
+                        cajaModeloAltas.getText(),
+                        cbPaisFabAltas.getSelectedItem().toString(),
+                        fechaSQL,
+                        cajaPrecioListaAltas.getText(),
+                        numCilindrosAltas.getValue().toString(),
+                        Byte.parseByte(cbNumPuertasAltas.getSelectedItem().toString()),
+                        cbColorAltas.getSelectedItem().toString(),
+                        cbPesoAltas.getSelectedItem().toString(),
+                        capacidadAltas.getValue().toString());
+
+
+                if (vehiculoDAO.agregarVehiculo(v)){
+                    JOptionPane.showMessageDialog(this,"Registro Agregado CORRECTAMENTE");
+                    System.out.println("Registro Agregado CORRECTAMENTE");
+                    System.out.println("ejecutando");
+
+
+                    vehiculoDAO.actualizarTabla(tablaVehiculosAltas);
+
+                } else{
+                    JOptionPane.showMessageDialog(this,"Error en la insercion");
+                    System.out.println("ERROR en la insercion");
+                }
+            } catch (DateTimeException e1){
+                JOptionPane.showMessageDialog(this,"Seleccionaste un valor equivocado en alguno de los campos de la FECHA, Verifica los datos");
+            } catch (NumberFormatException e1){
+                JOptionPane.showMessageDialog(this,"Asegurate de llenar TODOS los campos correctamente!");
+            }
+
         } else if (componente == btnRestablecerAltas) {
             if (cajaNumVehiculoAltas.getText().isEmpty()){
                 JOptionPane.showMessageDialog(this,"No hay datos para borrar");
@@ -449,23 +504,40 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
     @Override
     public void keyTyped(KeyEvent e) {
         char c = e.getKeyChar();
-        int valorCaracter = (int) c;
-
         Object componente = e.getSource();
 
-        if (componente == cajaNumVehiculoAltas || componente == cajaPrecioListaAltas) {
 
-            if (valorCaracter == KeyEvent.VK_BACK_SPACE || valorCaracter == KeyEvent.VK_DELETE){
-                return;
-            }
-            if (valorCaracter < 48 || valorCaracter > 57){
+        if (componente == cajaNumVehiculoAltas) {
+            if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE) {
                 e.consume();
                 Toolkit.getDefaultToolkit().beep();
-                JOptionPane.showMessageDialog(this, "Solo debes ingresar Numeros!");
-
+                JOptionPane.showMessageDialog(this, "Solo debes ingresar números!");
             }
-        } else {
+        }
 
+
+        else if (componente == cajaPrecioListaAltas) {
+            String textoActual = cajaPrecioListaAltas.getText();
+
+            if (c == KeyEvent.VK_BACK_SPACE || c == KeyEvent.VK_DELETE) {
+                return;
+            }
+
+
+            if (c == '.' && !textoActual.contains(".")) {
+                return;
+            }
+
+
+            if (!Character.isDigit(c)) {
+                e.consume();
+                Toolkit.getDefaultToolkit().beep();
+                JOptionPane.showMessageDialog(this, "Solo debes ingresar números o un punto decimal!");
+            }
+        }
+
+
+        else {
             if (!Character.isLetter(c) && c != ' ' && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE) {
                 e.consume();
                 Toolkit.getDefaultToolkit().beep();
