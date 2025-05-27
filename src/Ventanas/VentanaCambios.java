@@ -285,19 +285,23 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
         agregarAInternal(scrollTablaCambios,10, 410, 750, 150);
 
         btnBuscarCambios = new JButton("Buscar");
-        agregarAInternal(btnBuscarCambios, 320,68,110,30);
+        btnBuscarCambios.setIcon(new ImageIcon(new ImageIcon("./img/search.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
+        agregarAInternal(btnBuscarCambios, 320,68,140,30);
         btnBuscarCambios.addActionListener(this);
 
         btnRestablecerCambios = new JButton("Restablecer");
-        agregarAInternal(btnRestablecerCambios, 490, 170,150,30);
+        btnRestablecerCambios.setIcon(new ImageIcon(new ImageIcon("./img/rest.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
+        agregarAInternal(btnRestablecerCambios, 490, 170,170,30);
         btnRestablecerCambios.addActionListener(this);
 
         btnGuardarCambios = new JButton("Guardar Cambios");
-        agregarAInternal(btnGuardarCambios, 490,240,150,30);
+        btnGuardarCambios.setIcon(new ImageIcon(new ImageIcon("./img/save.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
+        agregarAInternal(btnGuardarCambios, 490,240,170,30);
         btnGuardarCambios.addActionListener(this);
 
         btnCancelarCambios = new JButton("Cancelar");
-        agregarAInternal(btnCancelarCambios, 490,310,150,30);
+        btnCancelarCambios.setIcon(new ImageIcon(new ImageIcon("./img/cancelar.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
+        agregarAInternal(btnCancelarCambios, 490,310,170,30);
         btnCancelarCambios.addActionListener(this);
 
 

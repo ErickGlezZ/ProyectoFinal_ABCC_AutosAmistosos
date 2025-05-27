@@ -332,15 +332,18 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
         agregarAInternal(scrollTablaConsultas,10, 410, 750, 150);
 
         btnBuscarConsultas = new JButton("Buscar");
-        agregarAInternal(btnBuscarConsultas,490, 100,110,30);
+        btnBuscarConsultas.setIcon(new ImageIcon(new ImageIcon("./img/search.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
+        agregarAInternal(btnBuscarConsultas,490, 100,140,30);
         btnBuscarConsultas.addActionListener(this);
 
         btnRestablecerConsultas = new JButton("Restablecer");
-        agregarAInternal(btnRestablecerConsultas,490, 170,110,30);
+        btnRestablecerConsultas.setIcon(new ImageIcon(new ImageIcon("./img/rest.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
+        agregarAInternal(btnRestablecerConsultas,490, 170,140,30);
         btnRestablecerConsultas.addActionListener(this);
 
         btnCancelarConsultas = new JButton("Cancelar");
-        agregarAInternal(btnCancelarConsultas,490,240,110,30);
+        btnCancelarConsultas.setIcon(new ImageIcon(new ImageIcon("./img/cancelar.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
+        agregarAInternal(btnCancelarConsultas,490,240,140,30);
         btnCancelarConsultas.addActionListener(this);
 
         //Barra Busqueda

@@ -70,10 +70,15 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         toolBar.setBackground(new Color(40, 44, 52)); // Fondo oscuro
         toolBar.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100)));
         btnToolAgregar = new JButton("Agregar");
+        btnToolAgregar.setIcon(new ImageIcon(new ImageIcon("./img/add.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
         btnToolEliminar = new JButton("Eliminar");
+        btnToolEliminar.setIcon(new ImageIcon(new ImageIcon("./img/delete.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
         btnToolCambiar = new JButton("Modificar");
+        btnToolCambiar.setIcon(new ImageIcon(new ImageIcon("./img/modificar.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
         btnToolConsultar = new JButton("Consultar");
+        btnToolConsultar.setIcon(new ImageIcon(new ImageIcon("./img/consultar.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
         btnToolCerrarSesion = new JButton("Cerrar Sesión");
+        btnToolCerrarSesion.setIcon(new ImageIcon(new ImageIcon("./img/cerrarSesion.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
 
         btnToolAgregar.addActionListener(this);
         btnToolEliminar.addActionListener(this);

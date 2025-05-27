@@ -291,19 +291,23 @@ public class VentanaBajas extends JInternalFrame implements ActionListener, KeyL
         agregarAInternal(scrollTablaBajas,10, 410, 750, 150);
 
         btnBuscarBajas = new JButton("Buscar");
-        agregarAInternal(btnBuscarBajas,320,68,110,30);
+        btnBuscarBajas.setIcon(new ImageIcon(new ImageIcon("./img/search.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
+        agregarAInternal(btnBuscarBajas,320,68,140,30);
         btnBuscarBajas.addActionListener(this);
 
         btnEliminar = new JButton("Eliminar");
-        agregarAInternal(btnEliminar,490, 120,110,30);
+        btnEliminar.setIcon(new ImageIcon(new ImageIcon("./img/delete.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
+        agregarAInternal(btnEliminar,490, 120,140,30);
         btnEliminar.addActionListener(this);
 
         btnRestablecerBajas = new JButton("Restablecer");
-        agregarAInternal(btnRestablecerBajas,490, 190,110,30);
+        btnRestablecerBajas.setIcon(new ImageIcon(new ImageIcon("./img/rest.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
+        agregarAInternal(btnRestablecerBajas,490, 190,140,30);
         btnRestablecerBajas.addActionListener(this);
 
         btnCancelarBajas = new JButton("Cancelar");
-        agregarAInternal(btnCancelarBajas,490,260,110,30);
+        btnCancelarBajas.setIcon(new ImageIcon(new ImageIcon("./img/cancelar.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
+        agregarAInternal(btnCancelarBajas,490,260,140,30);
         btnCancelarBajas.addActionListener(this);
 
         cajaModeloBajas.setEnabled(false);

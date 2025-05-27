@@ -310,15 +310,18 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
 
 
         btnAgregar = new JButton("Agregar");
-        agregarAInternal(btnAgregar,490, 100,110,30);
+        btnAgregar.setIcon(new ImageIcon(new ImageIcon("./img/add.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
+        agregarAInternal(btnAgregar,490, 100,140,30);
         btnAgregar.addActionListener(this);
 
         btnRestablecerAltas = new JButton("Restablecer");
-        agregarAInternal(btnRestablecerAltas,490, 170,110,30);
+        btnRestablecerAltas.setIcon(new ImageIcon(new ImageIcon("./img/rest.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
+        agregarAInternal(btnRestablecerAltas,490, 170,140,30);
         btnRestablecerAltas.addActionListener(this);
 
         btnCancelarAltas = new JButton("Cancelar");
-        agregarAInternal(btnCancelarAltas,490,240,110,30);
+        btnCancelarAltas.setIcon(new ImageIcon(new ImageIcon("./img/cancelar.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
+        agregarAInternal(btnCancelarAltas,490,240,140,30);
         btnCancelarAltas.addActionListener(this);
 
 
