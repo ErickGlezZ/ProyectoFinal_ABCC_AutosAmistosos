@@ -1,5 +1,6 @@
 package Vista;
 
+import VentanaLogin.Login;
 import Ventanas.VentanaAltas;
 import Ventanas.VentanaBajas;
 import Ventanas.VentanaCambios;
@@ -14,18 +15,20 @@ import java.beans.PropertyVetoException;
 
 public class VentanaPrincipal extends JFrame implements ActionListener {
 
+    Login login;
     JDesktopPane desktopPane;
     JMenu menuVehiculos, menuClientes, menuVendedores, menuVentas;
     JMenuItem itemAltas, itemBajas, itemCambios, itemConsultas;
-    JButton btnToolAgregar, btnToolEliminar, btnToolCambiar, btnToolConsultar;
+    JButton btnToolAgregar, btnToolEliminar, btnToolCambiar, btnToolConsultar, btnToolCerrarSesion;
 
     VentanaAltas IF_Altas = new VentanaAltas();
     VentanaBajas IF_Bajas = new VentanaBajas();
     VentanaCambios IF_Cambios = new VentanaCambios();
     VentanaConsultas IF_Consultas = new VentanaConsultas();
 
-    public VentanaPrincipal(){
+    public VentanaPrincipal(Login login){
 
+        this.login = login;
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Sistema Distribuidor de Autos Amistosos");
         setSize(835, 700);
@@ -68,16 +71,19 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         btnToolEliminar = new JButton("Eliminar");
         btnToolCambiar = new JButton("Modificar");
         btnToolConsultar = new JButton("Consultar");
+        btnToolCerrarSesion = new JButton("Cerrar Sesión");
 
         btnToolAgregar.addActionListener(this);
         btnToolEliminar.addActionListener(this);
         btnToolCambiar.addActionListener(this);
         btnToolConsultar.addActionListener(this);
+        btnToolCerrarSesion.addActionListener(this);
 
         toolBar.add(btnToolAgregar);
         toolBar.add(btnToolEliminar);
         toolBar.add(btnToolCambiar);
         toolBar.add(btnToolConsultar);
+        toolBar.add(btnToolCerrarSesion);
 
         getContentPane().add(toolBar, BorderLayout.NORTH);
         getContentPane().add(desktopPane, BorderLayout.CENTER);
@@ -123,7 +129,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
 
 
 
-
+/*
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -133,6 +139,8 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
             }
         });
     }
+
+ */
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -179,8 +187,11 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
                 IF_Consultas.toFront();
 
             }
-        }
+        } else if (componente == btnToolCerrarSesion) {
+            this.dispose();
 
+            login.setVisible(true);
+        }
 
 
     }

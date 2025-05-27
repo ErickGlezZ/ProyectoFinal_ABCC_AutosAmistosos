@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -202,6 +203,9 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
             cbAñoCambios.addItem(a);
         }
         agregarAInternal(cbAñoCambios, 320, 180, 80, 25);
+
+        cbMesCambios.addActionListener(e -> actualizarDias());
+        cbAñoCambios.addActionListener(e -> actualizarDias());
 
         JLabel txtPrecioListaCambios = new JLabel("Precio de Lista:");
         agregarAInternal(txtPrecioListaCambios, 10, 210, 120, 20);
@@ -426,6 +430,26 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
 
     public void refrescarTabla(){
         vehiculoDAO.actualizarTabla(tablaVehiculosCambios);
+    }
+
+    public void actualizarDias() {
+        int mes = cbMesCambios.getSelectedIndex();
+        Object añoObj = cbAñoCambios.getSelectedItem();
+
+        if (mes <= 0 || !(añoObj instanceof Integer)) {
+            return;
+        }
+
+        int año = (int) añoObj;
+
+
+        YearMonth yearMonth = YearMonth.of(año, mes);
+        int diasEnMes = yearMonth.lengthOfMonth();
+
+        cbDiaCambios.removeAllItems();
+        for (int d = 1; d <= diasEnMes; d++) {
+            cbDiaCambios.addItem(d);
+        }
     }
 
 

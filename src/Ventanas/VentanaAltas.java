@@ -18,6 +18,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.stream.StreamSupport;
@@ -208,6 +209,9 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
         }
         agregarAInternal(cbAñoAltas, 320, 180, 80, 25);
 
+        cbMesAltas.addActionListener(e -> actualizarDias());
+        cbAñoAltas.addActionListener(e -> actualizarDias());
+
 
         JLabel txtPrecioListaAltas = new JLabel("Precio de Lista:");
         agregarAInternal(txtPrecioListaAltas, 10, 210, 120, 20);
@@ -375,6 +379,26 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
 
     public void refrescarTabla(){
         vehiculoDAO.actualizarTabla(tablaVehiculosAltas);
+    }
+
+    public void actualizarDias() {
+        int mes = cbMesAltas.getSelectedIndex();
+        Object añoObj = cbAñoAltas.getSelectedItem();
+
+        if (mes <= 0 || !(añoObj instanceof Integer)) {
+            return; // Aún no han seleccionado mes o año
+        }
+
+        int año = (int) añoObj;
+
+
+        YearMonth yearMonth = YearMonth.of(año, mes);
+        int diasEnMes = yearMonth.lengthOfMonth();
+
+        cbDiaAltas.removeAllItems();
+        for (int d = 1; d <= diasEnMes; d++) {
+            cbDiaAltas.addItem(d);
+        }
     }
 
 

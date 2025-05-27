@@ -1,9 +1,13 @@
 package VentanaLogin;
 
+import Vista.VentanaPrincipal;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class Login extends JFrame {
+public class Login extends JFrame implements ActionListener {
 
     JTextField cajaUsuario;
     JPasswordField cajaContraseña;
@@ -64,6 +68,7 @@ public class Login extends JFrame {
 
         btnLogin = new JButton("Ingresar");
         agregarComponente(panelContenedor,btnLogin,90, 175, 120, 30);
+        btnLogin.addActionListener(this);
 
 
         setContentPane(panelFondo);
@@ -84,6 +89,35 @@ public class Login extends JFrame {
                 new Login();
             }
         });
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        Object componente = e.getSource();
+        if (componente == btnLogin){
+            String usuario = cajaUsuario.getText();
+            String password = new String(cajaContraseña.getPassword());
+
+            if (usuario.equals("No al dejavu") && password.equals("autos12345")){
+                JOptionPane.showMessageDialog(this,"¡Bienvenido!");
+
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        new VentanaPrincipal(Login.this);
+                    }
+                });
+                cajaUsuario.setText("");
+                cajaContraseña.setText("");
+                this.setVisible(false);
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Usuario o clave incorrectos DEJAVU!!");
+            }
+        }
+
     }
 }
 
