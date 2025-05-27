@@ -6,6 +6,7 @@ import Modelo.Vehiculo;
 import com.mysql.cj.jdbc.exceptions.MysqlDataTruncation;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import java.awt.*;
@@ -36,7 +37,7 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
     JTable tablaVehiculosAltas;
 
     ImageIcon logoIcon, inicioIcon, personalIcon, encargadoIcon, telefonoIcon, correoIcon, autoIcon, configIcon, registrosIcon;
-    JLabel labelLogo, iconoPersonal, textoPersonal, iconoEncargado, textoEncargado, iconoTelefono, textoTelefono, iconoCorreo, textoCorreo, iconoAuto, textoAuto, iconoConfig, textoConfig;
+    JLabel labelLogo, iconoPersonal, textoPersonal, iconoEncargado, textoEncargado, iconoTelefono, textoTelefono, iconoCorreo, textoCorreo, iconoAuto, textoAuto, iconoConfig, textoConfig, txtEstadoReg;
     JButton btnInicio, btnRegistrosAltas;
 
 
@@ -44,19 +45,29 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
     public VentanaAltas() {
         super("ALTAS", true, true, false, true); // Título y propiedades del InternalFrame
         setLayout(null);
-        setSize(700, 500);
+        setSize(800, 600);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
 
         JPanel panelAltas = new JPanel();
         panelAltas.setLayout(null);
-        panelAltas.setBackground(Color.GREEN);
-        panelAltas.setBounds(0, 0, 650, 60);
+        panelAltas.setBackground(new Color(72,201,176));
+        panelAltas.setBounds(0, 0, 770, 60);
 
         JPanel panelDerechoAltas = new JPanel();
         panelDerechoAltas.setBackground(new Color(60, 63, 65));
-        panelDerechoAltas.setBounds(650, 0, 160, 700);
+        panelDerechoAltas.setBounds(770, 0, 160, 700);
         panelDerechoAltas.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100), 2));
         panelDerechoAltas.setLayout(null);
+
+
+
+        Color textoClaro = new Color(191,201,202);
+        Font fuente = new Font("Segoe UI", Font.PLAIN, 12);
+
+        UIManager.put("Label.foreground", textoClaro);
+        UIManager.put("Label.font", fuente);
+
+
 
 
         logoIcon = new ImageIcon("img/logo.png");
@@ -148,6 +159,11 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
         btnRegistrosAltas.setFocusPainted(false);
         agregarComponentePanel(panelDerechoAltas, btnRegistrosAltas, 15, 520, 130, 30);
         btnRegistrosAltas.addActionListener(this);
+
+        txtEstadoReg = new JLabel("Registros...");
+        txtEstadoReg.setForeground(Color.WHITE);
+        txtEstadoReg.setFont(new Font("Arial", Font.PLAIN, 12));
+        agregarComponentePanel(panelDerechoAltas,txtEstadoReg, 15,550,145,25);
 
         JLabel txtAltas = new JLabel("ALTAS VEHICULOS");
         txtAltas.setFont(new Font("Roboto", Font.BOLD, 15));
@@ -290,7 +306,7 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
 
         scrollTablaAltas = new JScrollPane(tablaVehiculosAltas);
         scrollTablaAltas.setVisible(false);
-        agregarAInternal(scrollTablaAltas,10, 410, 640, 150);
+        agregarAInternal(scrollTablaAltas,10, 410, 750, 150);
 
 
         btnAgregar = new JButton("Agregar");
@@ -306,9 +322,7 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
         btnCancelarAltas.addActionListener(this);
 
 
-
-
-
+        this.getContentPane().setBackground(new Color(40,44,52));
 
         add(panelAltas);
         add(panelDerechoAltas);
@@ -538,10 +552,8 @@ public class VentanaAltas extends JInternalFrame implements ActionListener, KeyL
             boolean visible = scrollTablaAltas.isVisible();
             scrollTablaAltas.setVisible(!visible);
 
-            // Cambiar el texto del botón también
-            btnRegistrosAltas.setText(visible ? "Mostrar Registros" : "Ocultar Registros");
+            txtEstadoReg.setText(visible ? "↑ Mostrar Registros ↑" : "↑ Ocultar Registros ↑");
 
-            // Actualizar la interfaz gráfica
             scrollTablaAltas.getParent().revalidate();
             scrollTablaAltas.getParent().repaint();
         } else if (componente == btnInicio) {

@@ -6,6 +6,7 @@ import Modelo.ResultSetTableModel;
 import Modelo.Vehiculo;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -32,7 +33,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
     JRadioButton rbTodos, rbModelo, rbPaisFab, rbFechaFab, rbPrecioLista, rbCilindros, rbNumPuertas, rbColor, rbPeso, rbCapacidad;
 
     ImageIcon logoIcon, inicioIcon, personalIcon, encargadoIcon, telefonoIcon, correoIcon, autoIcon, configIcon, registrosIcon;
-    JLabel labelLogo, iconoPersonal, textoPersonal, iconoEncargado, textoEncargado, iconoTelefono, textoTelefono, iconoCorreo, textoCorreo, iconoAuto, textoAuto, iconoConfig, textoConfig;
+    JLabel labelLogo, iconoPersonal, textoPersonal, iconoEncargado, textoEncargado, iconoTelefono, textoTelefono, iconoCorreo, textoCorreo, iconoAuto, textoAuto, iconoConfig, textoConfig, txtEstadoReg;
 
 
     VehiculoDAO vehiculoDAO = VehiculoDAO.getInstancia();
@@ -45,14 +46,18 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         JPanel panelConsultas = new JPanel();
         panelConsultas.setLayout(null);
-        panelConsultas.setBackground(Color.BLUE);
-        panelConsultas.setBounds(0, 0, 650, 60);
+        panelConsultas.setBackground(new Color(36,113,163));
+        panelConsultas.setBounds(0, 0, 770, 60);
 
         JPanel panelDerechoConsultas = new JPanel();
         panelDerechoConsultas.setBackground(new Color(60, 63, 65));
-        panelDerechoConsultas.setBounds(650, 0, 160, 700);
+        panelDerechoConsultas.setBounds(770, 0, 160, 700);
         panelDerechoConsultas.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100), 2));
         panelDerechoConsultas.setLayout(null);
+
+
+
+
 
         logoIcon = new ImageIcon("img/logo.png");
         Image logoRedimensionado4 = logoIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
@@ -135,6 +140,11 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
         agregarComponentePanel(panelDerechoConsultas, btnRegistrosConsultas, 15, 520, 130, 30);
         btnRegistrosConsultas.addActionListener(this);
 
+        txtEstadoReg = new JLabel("Registros...");
+        txtEstadoReg.setForeground(Color.WHITE);
+        txtEstadoReg.setFont(new Font("Arial", Font.PLAIN, 12));
+        agregarComponentePanel(panelDerechoConsultas,txtEstadoReg, 15,550,145,25);
+
 
         JLabel txtConsultas = new JLabel("CONSULTAR VEHICULOS");
         txtConsultas.setFont(new Font("Roboto", Font.BOLD, 15));
@@ -147,11 +157,19 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         rbTodos = new JRadioButton("TODOS.");
         agregarAInternal(rbTodos, 10,100,80,20);
+        rbTodos.setFocusPainted(false);
+        rbTodos.setBorderPainted(false);
+        rbTodos.setContentAreaFilled(false);
+        rbTodos.setForeground(Color.WHITE);
         rbTodos.addActionListener(this);
         rbTodos.setSelected(true);
 
         rbModelo = new JRadioButton("MODELO:");
         agregarAInternal(rbModelo,100,100,80,20);
+        rbModelo.setFocusPainted(false);
+        rbModelo.setBorderPainted(false);
+        rbModelo.setContentAreaFilled(false);
+        rbModelo.setForeground(Color.WHITE);
         rbModelo.addActionListener(this);
 
         cajaModeloConsultas = new JTextField();
@@ -160,6 +178,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         rbPaisFab = new JRadioButton("PAIS FABRICACION:");
         agregarAInternal(rbPaisFab,100,130,140,20);
+        rbPaisFab.setFocusPainted(false);
+        rbPaisFab.setBorderPainted(false);
+        rbPaisFab.setContentAreaFilled(false);
+        rbPaisFab.setForeground(Color.WHITE);
         rbPaisFab.addActionListener(this);
 
         String[] paisesFabricantesConsultas = {
@@ -179,6 +201,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         rbFechaFab = new JRadioButton("FECHA FABRICACION:");
         agregarAInternal(rbFechaFab,100,160,150,20);
+        rbFechaFab.setFocusPainted(false);
+        rbFechaFab.setBorderPainted(false);
+        rbFechaFab.setContentAreaFilled(false);
+        rbFechaFab.setForeground(Color.WHITE);
         rbFechaFab.addActionListener(this);
 
         cajaFechaFabConsultas = new JTextField();
@@ -187,6 +213,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         rbPrecioLista = new JRadioButton("PRECIO LISTA:");
         agregarAInternal(rbPrecioLista,100,190,120,20);
+        rbPrecioLista.setFocusPainted(false);
+        rbPrecioLista.setBorderPainted(false);
+        rbPrecioLista.setContentAreaFilled(false);
+        rbPrecioLista.setForeground(Color.WHITE);
         rbPrecioLista.addActionListener(this);
 
         cajaPrecioListaConsultas = new JTextField();
@@ -195,6 +225,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         rbCilindros = new JRadioButton("CILINDROS:");
         agregarAInternal(rbCilindros,100,220,100,20);
+        rbCilindros.setFocusPainted(false);
+        rbCilindros.setBorderPainted(false);
+        rbCilindros.setContentAreaFilled(false);
+        rbCilindros.setForeground(Color.WHITE);
         rbCilindros.addActionListener(this);
 
         String cilindrosConsultas[] = {"0", "3", "4", "5", "6", "8", "10", "12", "16"};
@@ -205,6 +239,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         rbNumPuertas = new JRadioButton("NUMERO PUERTAS:");
         agregarAInternal(rbNumPuertas,100,250,140,20);
+        rbNumPuertas.setFocusPainted(false);
+        rbNumPuertas.setBorderPainted(false);
+        rbNumPuertas.setContentAreaFilled(false);
+        rbNumPuertas.setForeground(Color.WHITE);
         rbNumPuertas.addActionListener(this);
 
         cbNumPuertasConsultas = new JComboBox<>(new Integer[]{0, 2, 3, 4, 5});
@@ -214,6 +252,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         rbColor = new JRadioButton("COLOR:");
         agregarAInternal(rbColor,100,280,100,20);
+        rbColor.setFocusPainted(false);
+        rbColor.setBorderPainted(false);
+        rbColor.setContentAreaFilled(false);
+        rbColor.setForeground(Color.WHITE);
         rbColor.addActionListener(this);
 
         String[] coloresAutoConsultas = {
@@ -228,6 +270,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         rbPeso = new JRadioButton("PESO:");
         agregarAInternal(rbPeso,100,310,80,20);
+        rbPeso.setFocusPainted(false);
+        rbPeso.setBorderPainted(false);
+        rbPeso.setContentAreaFilled(false);
+        rbPeso.setForeground(Color.WHITE);
         rbPeso.addActionListener(this);
 
         String[] pesos = {
@@ -244,6 +290,10 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         rbCapacidad = new JRadioButton("CAPACIDAD PERSONAS:");
         agregarAInternal(rbCapacidad,100,340,170,20);
+        rbCapacidad.setFocusPainted(false);
+        rbCapacidad.setBorderPainted(false);
+        rbCapacidad.setContentAreaFilled(false);
+        rbCapacidad.setForeground(Color.WHITE);
         rbCapacidad.addActionListener(this);
 
         String capacidadesConsultas[] = {"0", "2", "4", "5", "7", "8", "12", "15"};
@@ -279,7 +329,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
 
         scrollTablaConsultas = new JScrollPane(tablaVehiculosConsultas);
         scrollTablaConsultas.setVisible(false);
-        agregarAInternal(scrollTablaConsultas,10, 410, 640, 150);
+        agregarAInternal(scrollTablaConsultas,10, 410, 750, 150);
 
         btnBuscarConsultas = new JButton("Buscar");
         agregarAInternal(btnBuscarConsultas,490, 100,110,30);
@@ -323,7 +373,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
         agregarAInternal(btnUltimoReg,410,68,30,25);
         btnUltimoReg.addActionListener(this);
 
-
+        this.getContentPane().setBackground(new Color(40,44,52));
         listaVehiculos = añadirVehiculos();
         actualizarEstadoBotones();
         add(panelConsultas);
@@ -803,9 +853,7 @@ public class VentanaConsultas extends JInternalFrame implements ActionListener {
             boolean visible = scrollTablaConsultas.isVisible();
             scrollTablaConsultas.setVisible(!visible);
 
-
-            btnRegistrosConsultas.setText(visible ? "Mostrar tabla" : "Ocultar tabla");
-
+            txtEstadoReg.setText(visible ? "↑ Mostrar Registros ↑" : "↑ Ocultar Registros ↑");
 
             scrollTablaConsultas.getParent().revalidate();
             scrollTablaConsultas.getParent().repaint();

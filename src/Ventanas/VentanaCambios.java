@@ -6,6 +6,7 @@ import Modelo.ResultSetTableModel;
 import Modelo.Vehiculo;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -30,7 +31,7 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
     JTable  tablaVehiculosCambios;
 
     ImageIcon logoIcon, inicioIcon, personalIcon, encargadoIcon, telefonoIcon, correoIcon, autoIcon, configIcon, registrosIcon;
-    JLabel labelLogo, iconoPersonal, textoPersonal, iconoEncargado, textoEncargado, iconoTelefono, textoTelefono, iconoCorreo, textoCorreo, iconoAuto, textoAuto, iconoConfig, textoConfig;
+    JLabel labelLogo, iconoPersonal, textoPersonal, iconoEncargado, textoEncargado, iconoTelefono, textoTelefono, iconoCorreo, textoCorreo, iconoAuto, textoAuto, iconoConfig, textoConfig, txtEstadoReg;
 
 
     ConexionBD conexionBD = ConexionBD.getInstancia();
@@ -44,12 +45,12 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
 
         JPanel panelCambios = new JPanel();
         panelCambios.setLayout(null);
-        panelCambios.setBackground(Color.ORANGE);
-        panelCambios.setBounds(0, 0, 650, 60);
+        panelCambios.setBackground(new Color(220,118,51));
+        panelCambios.setBounds(0, 0, 770, 60);
 
         JPanel panelDerechoCambios = new JPanel();
         panelDerechoCambios.setBackground(new Color(60, 63, 65));
-        panelDerechoCambios.setBounds(650, 0, 160, 700);
+        panelDerechoCambios.setBounds(770, 0, 160, 700);
         panelDerechoCambios.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100), 2));
         panelDerechoCambios.setLayout(null);
 
@@ -143,6 +144,11 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
         btnRegistrosCambios.setFocusPainted(false);
         agregarComponentePanel(panelDerechoCambios, btnRegistrosCambios, 15, 520, 130, 30);
         btnRegistrosCambios.addActionListener(this);
+
+        txtEstadoReg = new JLabel("Registros...");
+        txtEstadoReg.setForeground(Color.WHITE);
+        txtEstadoReg.setFont(new Font("Arial", Font.PLAIN, 12));
+        agregarComponentePanel(panelDerechoCambios,txtEstadoReg, 15,550,145,25);
 
         JLabel txtCambios = new JLabel("CAMBIOS VEHICULOS");
         txtCambios.setFont(new Font("Roboto", Font.BOLD, 15));
@@ -276,7 +282,7 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
 
         scrollTablaCambios = new JScrollPane(tablaVehiculosCambios);
         scrollTablaCambios.setVisible(false);
-        agregarAInternal(scrollTablaCambios,10, 410, 640, 150);
+        agregarAInternal(scrollTablaCambios,10, 410, 750, 150);
 
         btnBuscarCambios = new JButton("Buscar");
         agregarAInternal(btnBuscarCambios, 320,68,110,30);
@@ -309,7 +315,7 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
         capacidadCambios.setEnabled(false);
 
 
-
+        this.getContentPane().setBackground(new Color(40,44,52));
         add(panelCambios);
         add(panelDerechoCambios);
     }
@@ -596,7 +602,7 @@ public class VentanaCambios extends JInternalFrame implements ActionListener {
             scrollTablaCambios.setVisible(!visible);
 
 
-            btnRegistrosCambios.setText(visible ? "Mostrar tabla" : "Ocultar tabla");
+            txtEstadoReg.setText(visible ? "↑ Mostrar Registros ↑" : "↑ Ocultar Registros ↑");
 
 
             scrollTablaCambios.getParent().revalidate();

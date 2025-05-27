@@ -5,6 +5,7 @@ import Controlador.VehiculoDAO;
 import Modelo.ResultSetTableModel;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -29,7 +30,7 @@ public class VentanaBajas extends JInternalFrame implements ActionListener, KeyL
     JTable tablaVehiculosBajas;
 
     ImageIcon logoIcon, inicioIcon, personalIcon, encargadoIcon, telefonoIcon, correoIcon, autoIcon, configIcon, registrosIcon;
-    JLabel labelLogo, iconoPersonal, textoPersonal, iconoEncargado, textoEncargado, iconoTelefono, textoTelefono, iconoCorreo, textoCorreo, iconoAuto, textoAuto, iconoConfig, textoConfig;
+    JLabel labelLogo, iconoPersonal, textoPersonal, iconoEncargado, textoEncargado, iconoTelefono, textoTelefono, iconoCorreo, textoCorreo, iconoAuto, textoAuto, iconoConfig, textoConfig, txtEstadoReg;
 
 
     ConexionBD conexionBD = ConexionBD.getInstancia();
@@ -43,12 +44,12 @@ public class VentanaBajas extends JInternalFrame implements ActionListener, KeyL
 
         JPanel panelBajas = new JPanel();
         panelBajas.setLayout(null);
-        panelBajas.setBackground(Color.RED);
-        panelBajas.setBounds(0, 0, 650, 60);
+        panelBajas.setBackground(new Color(192,57,43));
+        panelBajas.setBounds(0, 0, 770, 60);
 
         JPanel panelDerechoBajas = new JPanel();
         panelDerechoBajas.setBackground(new Color(60, 63, 65));
-        panelDerechoBajas.setBounds(650, 0, 160, 700);
+        panelDerechoBajas.setBounds(770, 0, 160, 700);
         panelDerechoBajas.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100), 2));
         panelDerechoBajas.setLayout(null);
 
@@ -142,6 +143,11 @@ public class VentanaBajas extends JInternalFrame implements ActionListener, KeyL
         btnRegistrosBajas.setFocusPainted(false);
         agregarComponentePanel(panelDerechoBajas, btnRegistrosBajas, 15, 520, 130, 30);
         btnRegistrosBajas.addActionListener(this);
+
+        txtEstadoReg = new JLabel("Registros...");
+        txtEstadoReg.setForeground(Color.WHITE);
+        txtEstadoReg.setFont(new Font("Arial", Font.PLAIN, 12));
+        agregarComponentePanel(panelDerechoBajas,txtEstadoReg, 15,550,145,25);
 
         JLabel txtBajas = new JLabel("BAJAS VEHICULOS");
         txtBajas.setFont(new Font("Roboto", Font.BOLD, 15));
@@ -282,7 +288,7 @@ public class VentanaBajas extends JInternalFrame implements ActionListener, KeyL
 
         scrollTablaBajas = new JScrollPane(tablaVehiculosBajas);
         scrollTablaBajas.setVisible(false);
-        agregarAInternal(scrollTablaBajas,10, 410, 640, 150);
+        agregarAInternal(scrollTablaBajas,10, 410, 750, 150);
 
         btnBuscarBajas = new JButton("Buscar");
         agregarAInternal(btnBuscarBajas,320,68,110,30);
@@ -312,8 +318,9 @@ public class VentanaBajas extends JInternalFrame implements ActionListener, KeyL
         cbPesoBajas.setEnabled(false);
         capacidadBajas.setEnabled(false);
 
-
+        this.getContentPane().setBackground(new Color(40,44,52));
         vehiculoDAO.actualizarTabla(tablaVehiculosBajas);
+
         add(panelBajas);
         add(panelDerechoBajas);
     }
@@ -441,7 +448,7 @@ public class VentanaBajas extends JInternalFrame implements ActionListener, KeyL
             scrollTablaBajas.setVisible(!visible);
 
 
-            btnRegistrosBajas.setText(visible ? "Mostrar tabla" : "Ocultar tabla");
+            txtEstadoReg.setText(visible ? "↑ Mostrar Registros ↑" : "↑ Ocultar Registros ↑");
 
 
             scrollTablaBajas.getParent().revalidate();

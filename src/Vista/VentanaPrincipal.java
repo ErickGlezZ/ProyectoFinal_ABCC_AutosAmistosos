@@ -31,11 +31,11 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         this.login = login;
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Sistema Distribuidor de Autos Amistosos");
-        setSize(835, 700);
+        setSize(950, 700);
         setLocationRelativeTo(null);
 
         desktopPane = new JDesktopPane();
-        desktopPane.setBackground(new Color(0, 150, 163));
+        desktopPane.setBackground(new Color(28, 40, 51));
         add(desktopPane);
 
         JMenuBar menuBar = new JMenuBar();
@@ -67,6 +67,8 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         setJMenuBar(menuBar);
 
         JToolBar toolBar = new JToolBar("Herramientas");
+        toolBar.setBackground(new Color(40, 44, 52)); // Fondo oscuro
+        toolBar.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100)));
         btnToolAgregar = new JButton("Agregar");
         btnToolEliminar = new JButton("Eliminar");
         btnToolCambiar = new JButton("Modificar");
