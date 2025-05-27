@@ -67,6 +67,7 @@ public class Login extends JFrame implements ActionListener {
 
 
         btnLogin = new JButton("Ingresar");
+        btnLogin.setIcon(new ImageIcon(new ImageIcon("./img/login.png").getImage().getScaledInstance(32, 20, java.awt.Image.SCALE_SMOOTH)));
         agregarComponente(panelContenedor,btnLogin,90, 175, 120, 30);
         btnLogin.addActionListener(this);
 
